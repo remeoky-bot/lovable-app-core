@@ -1,0 +1,2999 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Printania — Gestion Scolaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose-deep:#9c1850;
+  --rose:#c2185b;
+  --fuchsia:#e91e8c;
+  --rose-soft:#f9e4ee;
+  --navy:#161b33;
+  --navy-2:#232a4d;
+  --cream:#faf6ef;
+  --ivoire:#fffaf3;
+  --gold:#c9a24b;
+  --gold-light:#e6cd8c;
+  --ink:#1f1b24;
+  --gray:#7a7585;
+  --line:#ecdfe6;
+  --ok:#2f7d5e;
+  --warn:#c97a1f;
+  --danger:#b8273f;
+  --r-sm:10px;
+  --r-md:16px;
+  --r-lg:24px;
+  --shadow:0 10px 30px -10px rgba(156,24,80,.18), 0 2px 8px rgba(22,27,51,.06);
+  --shadow-lg:0 24px 60px -20px rgba(22,27,51,.25);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.serif{font-family:'Playfair Display',serif;}
+.mono-num{font-family:'Cormorant Garamond',serif; font-weight:600;}
+a{color:inherit;}
+button{font-family:inherit; cursor:pointer; border:none;}
+input,select,textarea{font-family:inherit; font-size:14px;}
+::selection{background:var(--rose-soft);}
+
+/* ---------- scrollbar ---------- */
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:var(--rose-soft);border-radius:8px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-light);}
+
+/* ================= LOGIN ================= */
+#login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(233,30,140,.10), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(201,162,75,.14), transparent 45%),
+    linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 55%, #2c1230 100%);
+  padding:30px;
+  position:relative;
+  overflow:hidden;
+}
+#login-screen::before{
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.025) 0 1px, transparent 1px 26px);
+  pointer-events:none;
+}
+.login-card{
+  width:100%; max-width:980px;
+  background:var(--ivoire);
+  border-radius:28px;
+  box-shadow:var(--shadow-lg);
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:1.05fr 1fr;
+  position:relative;
+  z-index:1;
+  border:1px solid rgba(201,162,75,.35);
+}
+.login-brand{
+  background:linear-gradient(160deg, var(--rose-deep), var(--fuchsia) 70%, #b3206e);
+  color:#fff;
+  padding:54px 42px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+}
+.login-brand::after{
+  content:'';
+  position:absolute; right:-60px; bottom:-60px;
+  width:240px; height:240px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);
+}
+.login-brand::before{
+  content:'';
+  position:absolute; right:20px; top:-40px;
+  width:160px; height:160px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.14);
+}
+.crest{
+  width:64px;height:64px;border-radius:50%;
+  border:1.5px solid var(--gold-light);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:700;font-size:22px;
+  color:var(--gold-light);
+  margin-bottom:26px;
+  background:rgba(255,255,255,.05);
+}
+.login-brand h1{
+  font-size:26px; line-height:1.18; margin:0 0 10px; font-weight:700;
+  letter-spacing:.2px;
+}
+.login-brand .tagline{
+  font-family:'Playfair Display',serif; font-style:italic; font-size:28px;
+  font-weight:800; color:#fff; margin:0 0 14px; letter-spacing:.5px;
+  text-shadow:0 2px 12px rgba(0,0,0,.18);
+}
+.login-brand .tagline-sub{
+  font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px;
+  color:var(--gold-light); margin:0 0 14px; letter-spacing:.3px;
+}
+.login-brand p.sub{font-size:13.5px; opacity:.78; line-height:1.6; max-width:320px;}
+.login-brand .foot{font-size:11.5px; opacity:.55; letter-spacing:1.5px; text-transform:uppercase;}
+
+.login-panel{padding:48px 42px; display:flex; flex-direction:column;}
+.login-panel h2{font-size:22px;margin:0 0 4px;color:var(--navy);}
+.login-panel .hint{font-size:13px;color:var(--gray);margin:0 0 26px;}
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.role-tab{
+  border:1.5px solid var(--line); border-radius:var(--r-md);
+  padding:14px 12px; background:#fff; text-align:left;
+  transition:.18s; display:flex; gap:10px; align-items:center;
+}
+.role-tab .ic{font-size:20px;}
+.role-tab b{display:block;font-size:13.5px;color:var(--navy);}
+.role-tab span{font-size:11px;color:var(--gray);}
+.role-tab:hover{border-color:var(--fuchsia); transform:translateY(-1px); box-shadow:var(--shadow);}
+.role-tab.active{border-color:var(--fuchsia); background:var(--rose-soft); box-shadow:var(--shadow);}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase;}
+.field input,.field select{
+  width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:var(--r-sm);
+  background:#fff; transition:.15s; color:var(--ink);
+}
+.field input:focus,.field select:focus{outline:none;border-color:var(--fuchsia); box-shadow:0 0 0 3px rgba(233,30,140,.12);}
+.btn{
+  padding:13px 20px; border-radius:var(--r-sm); font-weight:600; font-size:14px;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  transition:.15s;
+}
+.btn-primary{background:linear-gradient(135deg,var(--rose),var(--fuchsia)); color:#fff; box-shadow:0 8px 20px -6px rgba(201,24,90,.5);}
+.btn-primary:hover{filter:brightness(1.06); transform:translateY(-1px);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#dcb968); color:#3a2c0c;}
+.btn-outline{background:transparent;border:1.5px solid var(--line);color:var(--navy);}
+.btn-outline:hover{border-color:var(--fuchsia);color:var(--fuchsia);}
+.btn-ghost{background:transparent;color:var(--gray);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-sm{padding:8px 13px;font-size:12.5px;border-radius:8px;}
+.btn-block{width:100%;}
+.login-error{background:#fdeaee;color:var(--danger);border:1px solid #f7c7d0;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
+
+/* ================= APP SHELL ================= */
+#app-screen{display:none; min-height:100vh;}
+.shell{display:grid; grid-template-columns:260px 1fr; min-height:100vh;}
+.sidebar{
+  background:linear-gradient(180deg,var(--navy),var(--navy-2));
+  color:#fff; padding:26px 18px; display:flex; flex-direction:column;
+  position:sticky; top:0; height:100vh;
+}
+.sidebar .brand{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:0 6px;}
+.sidebar .brand .crest{width:38px;height:38px;font-size:14px;margin:0;border-color:var(--gold-light);}
+.sidebar .brand b{font-family:'Playfair Display',serif;font-size:15px;line-height:1.2;display:block;}
+.sidebar .brand small{font-size:9.5px;color:var(--gold-light);letter-spacing:1px;text-transform:uppercase;}
+.sidebar .who{margin:18px 6px 22px;padding:12px 14px;background:rgba(255,255,255,.06);border-radius:14px;border:1px solid rgba(255,255,255,.08);}
+.sidebar .who .name{font-weight:600;font-size:13.5px;}
+.sidebar .who .role{font-size:11px;color:var(--gold-light);text-transform:uppercase;letter-spacing:.6px;margin-top:2px;}
+.nav-group{margin-bottom:6px;}
+.nav-label{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.35);padding:14px 12px 6px;}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;
+  font-size:13.5px;color:rgba(255,255,255,.82); margin-bottom:2px; transition:.15s;
+}
+.nav-item .ic{font-size:15px;width:18px;text-align:center;}
+.nav-item:hover{background:rgba(255,255,255,.07);}
+.nav-item.active{background:linear-gradient(135deg,var(--rose),var(--fuchsia)); color:#fff; box-shadow:0 6px 16px -4px rgba(233,30,140,.5);}
+.sidebar .logout{margin-top:auto;}
+.badge-count{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;min-width:16px;text-align:center;}
+.msg-badge{
+  position:absolute; top:6px; right:10px;
+  background:var(--danger); color:#fff; font-size:10px; font-weight:700;
+  padding:1px 6px; border-radius:20px; min-width:18px; text-align:center;
+  animation:popbadge .3s ease;
+}
+@keyframes popbadge{from{transform:scale(0);}to{transform:scale(1);}}
+
+.main{padding:30px 36px 60px; overflow-y:auto; max-height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
+.topbar h1{font-size:26px;margin:0;color:var(--navy);}
+.topbar .breadcrumb{font-size:12px;color:var(--gray);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px;}
+.topbar-actions{display:flex;gap:10px;}
+
+.grid{display:grid;gap:18px;}
+.cols-4{grid-template-columns:repeat(4,1fr);}
+.cols-5{grid-template-columns:repeat(5,1fr);}
+.cols-3{grid-template-columns:repeat(3,1fr);}
+.cols-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:1100px){.cols-4{grid-template-columns:repeat(2,1fr);}.cols-3{grid-template-columns:repeat(2,1fr);}.cols-5{grid-template-columns:repeat(3,1fr);}}
+
+.card{background:#fff;border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow);border:1px solid var(--line);}
+.stat-card{position:relative;overflow:hidden;}
+.stat-card .ic-bg{position:absolute;right:-10px;top:-10px;font-size:60px;opacity:.07;}
+.stat-card .label{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);font-weight:600;}
+.stat-card .val{font-family:'Playfair Display',serif;font-size:30px;color:var(--navy);margin-top:6px;}
+.stat-card .delta{font-size:12px;margin-top:6px;color:var(--ok);}
+
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:32px 0 14px;}
+.section-title h2{font-size:18px;margin:0;color:var(--navy);}
+.section-title .line{height:1px;background:var(--line);flex:1;margin-left:14px;}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);padding:10px 12px;border-bottom:1.5px solid var(--line);}
+td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--ink);}
+tr:hover td{background:#fdf8fb;}
+.table-wrap{overflow-x:auto;border-radius:var(--r-md);}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.pill-rose{background:var(--rose-soft);color:var(--rose-deep);}
+.pill-gold{background:#fbf1da;color:#8a6d1f;}
+.pill-ok{background:#e3f3ec;color:var(--ok);}
+.pill-danger{background:#fdeaee;color:var(--danger);}
+.pill-navy{background:#e9eaf5;color:var(--navy);}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(22,15,25,.55);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center;padding:24px;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:var(--r-lg);max-width:560px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal-head{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+.modal-head h3{margin:0;font-size:18px;color:var(--navy);}
+.modal-body{padding:22px 26px;}
+.modal-foot{padding:18px 26px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;}
+.close-x{font-size:20px;color:var(--gray);background:none;width:30px;height:30px;border-radius:50%;}
+.close-x:hover{background:var(--rose-soft);color:var(--rose);}
+
+.empty-state{text-align:center;padding:50px 20px;color:var(--gray);}
+.empty-state .ic{font-size:40px;margin-bottom:10px;opacity:.5;}
+
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:500;display:flex;flex-direction:column;gap:10px;}
+.toast{background:var(--navy);color:#fff;padding:13px 20px;border-radius:12px;font-size:13.5px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;animation:slidein .25s ease;border-left:4px solid var(--fuchsia);}
+@keyframes slidein{from{transform:translateX(30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+.tabs{display:flex;gap:6px;border-bottom:1.5px solid var(--line);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:11px 16px;font-size:13px;font-weight:600;color:var(--gray);border-bottom:2.5px solid transparent;}
+.tab-btn.active{color:var(--rose-deep);border-color:var(--fuchsia);}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:6px 13px;border-radius:20px;background:#f4eef1;font-size:12.5px;color:var(--navy);border:1px solid var(--line);display:flex;align-items:center;gap:6px;}
+.chip .x{cursor:pointer;color:var(--gray);font-weight:700;}
+.chip .x:hover{color:var(--danger);}
+
+.note-input{width:54px;padding:6px 8px;border:1.5px solid var(--line);border-radius:7px;text-align:center;}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--fuchsia));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;overflow:hidden;}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.flex{display:flex;align-items:center;}
+.gap8{gap:8px;}.gap10{gap:10px;}.gap14{gap:14px;}
+.muted{color:var(--gray);font-size:12.5px;}
+hr.sep{border:none;border-top:1px solid var(--line);margin:18px 0;}
+
+/* ---------- BULLETIN REDESIGN — rose fuchsia + bleu moderne ---------- */
+:root{
+  --bull-pink:#e91e8c;
+  --bull-pink2:#f06292;
+  --bull-blue:#1565c0;
+  --bull-blue2:#1e88e5;
+  --bull-dark:#0d1b2a;
+  --bull-bg:#fff;
+}
+.bulletin-page{
+  width:297mm; min-height:210mm; background:var(--bull-bg); margin:0 auto 30px;
+  position:relative; padding:12mm 14mm 14mm;
+  border-radius:0; border:none; box-shadow:0 0 0 1px #ddd;
+}
+/* supprimer l'ancienne bordure dorée */
+.bulletin-border{ display:none; }
+.bull-header-band{
+  background:linear-gradient(135deg, var(--bull-blue) 0%, var(--bull-blue2) 45%, var(--bull-pink) 100%);
+  border-radius:12px; padding:16px 22px; display:flex; align-items:center; gap:18px;
+  margin-bottom:14px; color:#fff; position:relative; overflow:hidden;
+}
+.bull-header-band::after{
+  content:''; position:absolute; right:-30px; top:-30px;
+  width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,.07);
+}
+.bull-crest-new{
+  width:60px; height:60px; border-radius:50%;
+  background:rgba(255,255,255,.15); border:2px solid rgba(255,255,255,.5);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-weight:800; font-size:20px; color:#fff;
+  flex-shrink:0;
+}
+.bull-school-new h2{margin:0; font-size:14px; font-weight:700; letter-spacing:.2px;}
+.bull-school-new p{margin:2px 0 0; font-size:10px; opacity:.82;}
+.bull-title-new{
+  margin-left:auto; text-align:right;
+}
+.bull-title-new h1{
+  font-family:'Playfair Display',serif; font-size:20px; font-weight:800;
+  margin:0; color:#fff; letter-spacing:1px;
+  text-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.bull-title-new .bull-tri{font-size:12px; opacity:.88; font-style:italic;}
+
+.bull-info-bar{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:12px;
+}
+.bull-info-pill{
+  background:linear-gradient(135deg,#eaf2ff,#fce4f2); border-radius:10px; padding:8px 12px;
+  border:1px solid rgba(233,30,140,.15);
+}
+.bull-info-pill .lbl{font-size:9px; text-transform:uppercase; letter-spacing:.5px; color:var(--bull-blue); font-weight:700; margin-bottom:2px;}
+.bull-info-pill .val{font-size:13px; font-weight:700; color:var(--bull-dark);}
+
+.bull-table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:12px;}
+.bull-table thead tr{background:linear-gradient(135deg,var(--bull-blue),var(--bull-pink));}
+.bull-table th{color:#fff;padding:7px 10px;font-size:9px;text-transform:uppercase;letter-spacing:.4px;text-align:left;border:none;}
+.bull-table td{padding:6px 10px;border-bottom:1px solid #f0e8f5;color:var(--bull-dark);}
+.bull-table tr:nth-child(even) td{background:linear-gradient(90deg,#f8f0fb,#eef5ff);}
+.bull-table tr:last-child td{border-bottom:none;}
+.bull-mat-name{font-weight:600;}
+.bull-moy-cell{font-weight:800;font-size:12px;}
+.bull-moy-good{color:var(--bull-blue);}
+.bull-moy-avg{color:#e65100;}
+.bull-moy-bad{color:var(--danger);}
+
+.bull-foot-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px;}
+.bull-box-new{border-radius:10px;padding:10px 13px;font-size:10.5px;}
+.bull-box-new.blue{background:linear-gradient(135deg,#e3f0ff,#cde0fb);border:1px solid #90caf9;}
+.bull-box-new.pink{background:linear-gradient(135deg,#fce4f2,#f8bbd0);border:1px solid #f48fb1;}
+.bull-box-new.grey{background:#f5f5f5;border:1px solid #e0e0e0;}
+.bull-box-new .t{font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px;color:var(--bull-blue);}
+.signbox{display:flex;justify-content:space-between;margin-top:22px;font-size:10px;text-align:center;}
+.signbox div{width:140px;border-top:1.5px solid var(--bull-pink2);padding-top:4px;color:var(--bull-dark);}
+
+/* Aperçu bulletin — plein écran scrollable */
+.bull-preview-overlay{
+  display:none; position:fixed; inset:0; background:rgba(10,10,30,.85);
+  z-index:300; overflow-y:auto; padding:20px;
+}
+.bull-preview-overlay.show{display:block;}
+.bull-preview-inner{max-width:320mm;margin:0 auto;}
+.bull-preview-close{
+  position:fixed; top:16px; right:20px; z-index:400;
+  background:var(--bull-pink); color:#fff; border:none; border-radius:50%;
+  width:42px; height:42px; font-size:20px; cursor:pointer;
+  box-shadow:0 4px 16px rgba(233,30,140,.4);
+}
+
+@media print{
+  body *{visibility:hidden;}
+  #print-area, #print-area *{visibility:visible;}
+  #print-area{position:absolute;left:0;top:0;width:100%;}
+  .bulletin-page{box-shadow:none;margin:0;width:100%;border:none;}
+  .no-print{display:none!important;}
+  @page{size:A4 landscape;margin:0;}
+}
+.print-only{display:none;}
+@media print{.print-only{display:block;}}
+
+/* Facture */
+.facture-page{width:210mm;min-height:148mm;background:#fff;margin:0 auto 24px;box-shadow:var(--shadow-lg);padding:14mm;position:relative;border:1px solid var(--line);}
+.fac-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:16px;}
+.fac-table{width:100%;border-collapse:collapse;margin:14px 0;}
+.fac-table th{background:var(--rose-soft);color:var(--rose-deep);padding:8px 10px;font-size:11px;text-align:left;}
+.fac-table td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12.5px;}
+.fac-total{display:flex;justify-content:flex-end;margin-top:6px;}
+.fac-total table{width:260px;}
+.fac-total td{font-size:13px;}
+
+.searchbar{position:relative;flex:1;max-width:320px;}
+.searchbar input{padding-left:36px;width:100%;}
+.searchbar .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray);font-size:14px;}
+
+.loading-overlay{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:14px;}
+.spinner{width:44px;height:44px;border:3px solid var(--rose-soft);border-top-color:var(--fuchsia);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);resize:vertical;min-height:80px;}
+textarea:focus{outline:none;border-color:var(--fuchsia);}
+
+.lock-note{font-size:12px;color:var(--gray);background:#f6f3f7;border-radius:8px;padding:10px 12px;margin-bottom:14px;border-left:3px solid var(--gold);}
+
+/* ---- Photo upload ---- */
+.photo-upload-wrap{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.photo-preview{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2.5px solid var(--gold-light);background:var(--rose-soft);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;flex-shrink:0;}
+.photo-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.big-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--fuchsia));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0;overflow:hidden;}
+.big-avatar img{width:100%;height:100%;object-fit:cover;}
+
+/* ---- Emploi du temps grid ---- */
+.edt-grid{display:grid;grid-template-columns:80px repeat(5,1fr);gap:3px;font-size:12px;}
+.edt-head{background:var(--navy);color:#fff;padding:7px 8px;border-radius:6px;text-align:center;font-weight:600;font-size:11px;}
+.edt-time{background:#f0e9f5;padding:6px 8px;border-radius:6px;color:var(--navy);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center;}
+.edt-cell{background:#fff;border:1px solid var(--line);border-radius:6px;padding:7px 8px;min-height:52px;}
+.edt-cell.filled{background:linear-gradient(135deg,#fce4f2,#eef5ff);border-color:var(--fuchsia);}
+.edt-cell .edt-mat{font-weight:700;font-size:11.5px;color:var(--navy);}
+.edt-cell .edt-prof{font-size:10px;color:var(--gray);}
+.edt-cell .edt-salle{font-size:10px;color:var(--gold);}
+
+/* ---- Journal prof ---- */
+.journal-entry{border-left:3px solid var(--fuchsia);padding:10px 14px;background:#fff;border-radius:0 10px 10px 0;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.journal-entry .je-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.journal-entry .je-title{font-weight:700;font-size:13.5px;color:var(--navy);}
+.journal-entry .je-prog{font-size:12.5px;margin-top:4px;}
+.journal-entry .je-obs{font-size:12px;color:var(--gray);margin-top:4px;font-style:italic;}
+
+/* ---- Rapport cards ---- */
+.rapport-stat{display:flex;flex-direction:column;gap:4px;}
+.rapport-stat .rs-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:700;}
+.rapport-stat .rs-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);}
+
+/* ---- Presence ---- */
+.presence-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
+.presence-row:last-child{border-bottom:none;}
+.pres-btn{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:1.5px solid;cursor:pointer;transition:.15s;}
+.pres-btn.pres{background:var(--ok);color:#fff;border-color:var(--ok);}
+.pres-btn.abs{background:var(--danger);color:#fff;border-color:var(--danger);}
+.pres-btn.neutral{background:#f0f0f0;color:var(--gray);border-color:var(--line);}
+
+/* ---- Mobile responsive sidebar ---- */
+@media(max-width:768px){
+  .shell{grid-template-columns:1fr;}
+  .sidebar{display:none;position:fixed;z-index:100;width:80vw;max-width:280px;height:100vh;top:0;left:0;}
+  .sidebar.open{display:flex;}
+  .main{padding:18px 14px 60px;}
+  .topbar h1{font-size:20px;}
+  .grid.cols-4{grid-template-columns:repeat(2,1fr);}
+  .grid.cols-3{grid-template-columns:repeat(2,1fr);}
+  .grid.cols-2{grid-template-columns:1fr;}
+  #mobile-menu-btn{display:flex;}
+  .login-card{grid-template-columns:1fr;}
+  .login-brand{padding:32px 24px 24px;}
+  .login-panel{padding:24px;}
+  .edt-grid{grid-template-columns:60px repeat(5,1fr);font-size:10px;}
+}
+@media(min-width:769px){#mobile-menu-btn{display:none;}}
+#mobile-menu-btn{position:fixed;bottom:20px;right:20px;z-index:150;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--fuchsia));color:#fff;font-size:22px;box-shadow:0 8px 20px -4px rgba(201,24,90,.5);border:none;cursor:pointer;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;}
+.sidebar-overlay.show{display:block;}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div style="font-family:'Playfair Display',serif;color:var(--navy);">La Printania — chargement…</div>
+</div>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login-screen" style="display:none;">
+  <div class="login-card">
+    <div class="login-brand">
+      <div>
+        <div class="crest">LP</div>
+        <h1>Collège Privé d'Expression<br>Française et Anglaise</h1>
+        <p class="tagline">« La Printania »</p>
+        <p class="tagline-sub">Ambositra, Madagascar</p>
+        <p class="sub" style="margin-bottom:6px;"><em>« Confiez-nous vos enfants… ils seront les meilleurs. »</em></p>
+        <p class="sub"><strong style="color:var(--gold-light);letter-spacing:.5px;">CONFIANCE · DISCIPLINE · RÉUSSITE</strong></p>
+        <p class="sub" style="margin-top:10px;">📞 034 08 127 56 &nbsp;|&nbsp; <a href="https://web.facebook.com/people/La-Printania/100082897596638/?locale=en_GB#" target="_blank" style="color:var(--gold-light);text-decoration:underline;">Facebook La Printania</a></p>
+      </div>
+      <div class="foot" style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-size:10px;opacity:.5;">© 2026 &nbsp;<a href="https://tjrservice.com" target="_blank" style="color:var(--gold-light);text-decoration:none;">TJR SERVICE</a> — Développeur</span>
+      </div>
+    </div>
+    <div class="login-panel">
+      <h2>Connexion à l'espace</h2>
+      <p class="hint">Choisissez votre profil pour accéder à votre espace.</p>
+      <div class="role-tabs" id="role-tabs">
+        <button class="role-tab" data-role="directeur"><span class="ic">👑</span><span><b>Direction</b><span>Accès total</span></span></button>
+        <button class="role-tab" data-role="bureau"><span class="ic">🗂️</span><span><b>Bureau</b><span>Administration</span></span></button>
+        <button class="role-tab" data-role="prof"><span class="ic">🍎</span><span><b>Professeur</b><span>Mes classes</span></span></button>
+        <button class="role-tab" data-role="parent"><span class="ic">👪</span><span><b>Parent</b><span>Mon enfant</span></span></button>
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <div id="login-fields"></div>
+      <button class="btn btn-primary btn-block" id="btn-login" style="display:none;margin-top:8px;">Se connecter →</button>
+      <p class="muted" style="margin-top:18px;text-align:center;">Accès réservé · délivré uniquement par la Direction</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div id="app-screen">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="crest">LP</div>
+        <div><b>La Printania</b><small>Gestion scolaire</small></div>
+      </div>
+      <div class="who">
+        <div class="name" id="who-name">—</div>
+        <div class="role" id="who-role">—</div>
+      </div>
+      <nav id="nav-container" style="flex:1;overflow-y:auto;"></nav>
+      <div class="logout">
+        <button class="nav-item" style="width:100%;background:rgba(255,255,255,.05);" id="btn-logout"><span class="ic">↩️</span> Déconnexion</button>
+      </div>
+    </aside>
+    <main class="main" id="main-content"></main>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+<div class="modal-bg" id="modal-bg"><div class="modal" id="modal-box"></div></div>
+<button id="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+
+<script>
+/* Stockage permanent dans la base de données (Lovable Cloud) */
+(function(){
+  const URL_="https://c--a8f1c82e-6d20-4153-bce1-2d2ddd785d26-prod.lovable.cloud/rest/v1/app_store", KEY="sb_publishable_IjgwqAEC19lztQ6yJWNX4Q_f8l_q7Q7";
+  const H={apikey:KEY,"Content-Type":"application/json"};
+  window.storage={
+    async get(k){
+      const r=await fetch(URL_+"?key=eq."+encodeURIComponent(k)+"&select=value",{headers:H});
+      if(!r.ok) throw new Error("load failed "+r.status);
+      const rows=await r.json();
+      if(!rows.length) throw new Error("not found");
+      return {value: JSON.stringify(rows[0].value)};
+    },
+    async set(k,v){
+      const r=await fetch(URL_+"?on_conflict=key",{method:"POST",headers:Object.assign({Prefer:"resolution=merge-duplicates,return=minimal"},H),body:JSON.stringify({key:k,value:JSON.parse(v),updated_at:new Date().toISOString()}),keepalive:v.length<60000});
+      if(!r.ok) throw new Error("save failed "+r.status);
+    }
+  };
+})();
+</script>
+<script>
+/* ===================================================================
+   LA PRINTANIA — GESTION SCOLAIRE — MOTEUR APPLICATIF
+   =================================================================== */
+
+const SHARED = true; // données partagées école
+
+// ---------- état global ----------
+let DB = null;        // objet de données complet
+let SESSION = null;   // { role, id, nom, ... }
+
+const DEFAULT_CLASSES = ["Crèche","TP","PS","MS","GS","CP","CE1","CE2","CM1","CM2","6e","5e","4e","3e","Seconde","Première L","Première S","Première OSE"];
+const NIV_SECONDAIRE = ["6e","5e","4e","3e","Seconde","Première L","Première S","Première OSE","Terminale L","Terminale S","Terminale OSE"];
+
+function uid(p){ return p+'_'+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4); }
+function genCode(len=6){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<len;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function fmtDate(d){ if(!d) return '—'; const dt=new Date(d); return dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}); }
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+// ---------- modèle de données par défaut ----------
+function defaultDB(){
+  return {
+    config:{
+      schoolName:"Collège Privé d'Expression Française et Anglaise « La Printania »",
+      anneeScolaire: "2025-2026",
+      classes: DEFAULT_CLASSES.slice(),
+      matieres: ["Français","Anglais","Mathématiques","Sciences","Histoire-Géographie","Éducation Civique","EPS","Arts Plastiques","Malgache"],
+      codes:{ directeur:"DIRECTION-2026", bureau:"BUREAU-"+genCode(4), prof:"PROF-"+genCode(4) },
+      fraisInscription: 150000,
+      ecolageMensuel: 90000,
+      tarifs: {}, // {classe: {inscription: N, ecolage: N}} — tarifs par classe
+    },
+    personnel:[ // direction + bureau + profs
+      { id: uid('pers'), nom:"Mme la Directrice", role:"directeur", actif:true },
+    ],
+    eleves:[],   // {id, matricule, codeParent, nom, prenom, sexe, dateNaissance, classe, parentNom, parentTel, dateInscription, statut, photo}
+    notes:[],    // {id, eleveId, matiere, classe, note, bareme, coef, trimestre, profId, profNom, date}
+    avis:[],     // {id, eleveId, type(avis|avertissement|renvoi|felicitation), auteur, role, texte, date}
+    convocations:[], // {id, eleveId, motif, date, lieu, statut, auteur}
+    messages:[], // {id, from, fromRole, to('all'|'bureau'|'prof'|roleAndId), texte, date, readBy:[userId,...]}
+    evenements:[], // {id, titre, description, date, lieu, type}
+    factures:[], // {id, eleveId, type(inscription|ecolage|cantine|transport|uniforme|autre), libelle, montant, mois, date, statut, numero, auteur}
+    feedback:[], // avis des parents {id, eleveId, cible(prof|direction|ecole), profId, texte, note(1-5), date}
+    finances:{ depenses:[], contrats:[] },
+    absences:[],      // {id, eleveId, date, motif, justifie, justification, auteur}
+    emploiDuTemps:[], // {id, classe, jour, heureDebut, heureFin, matiere, profId, salle}
+    presences:[],     // {id, classe, date, auteur, appel:[{eleveId, present}]}
+    journalProf:[],   // {id, profId, profNom, classe, matiere, date, programme, observations, signeDate}
+    cantineEleves:[],  // {id, eleveId, abonne, prixMois}
+    transportEleves:[],// {id, eleveId, ligne, abonne, prixMois}
+    uniformes:[],      // {id, eleveId, items:[{article, taille, qte, prix}], statut, date}
+    autresFrais:[],    // {id, eleveId, libelle, montant, date, statut, auteur}
+    inventaire:{       // stocks matériels
+      tables:0, chaises:0, ordinateurs:0, imprimantes:0, materielPedagogique:0, autres:[]
+    },
+    examens:[],        // {id, titre, classe, matiere, date, duree, baremeTotal, auteur}
+    resultatsExamens:[],// {id, examenId, eleveId, note, observations}
+    historiqueEleve:[], // {id, eleveId, anneeScolaire, classe, decision, observations}
+    _seeded:true
+  };
+}
+
+// ---------- persistence ----------
+async function loadDB(){
+  try{
+    const res = await window.storage.get('printania_db', SHARED);
+    DB = JSON.parse(res.value);
+  }catch(e){
+    if(String(e.message).includes('not found')){ DB = defaultDB(); await saveDB(); }
+    else { alert('Connexion à la base impossible. Vérifiez internet puis actualisez.'); throw e; }
+  }
+}
+let saveTimer=null;
+async function saveDB(){
+  try{
+    await window.storage.set('printania_db', JSON.stringify(DB), SHARED);
+  }catch(e){ console.error('save error', e); toast('Erreur d\'enregistrement, réessayez.','error'); }
+}
+function saveSoon(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveDB, 250); }
+
+// ---------- toast ----------
+function toast(msg, type='ok'){
+  const wrap=document.getElementById('toast-wrap');
+  const el=document.createElement('div');
+  el.className='toast';
+  el.style.borderLeftColor = type==='error'?'var(--danger)':(type==='warn'?'var(--gold)':'var(--fuchsia)');
+  el.innerHTML = `<span>${type==='error'?'⚠️':(type==='warn'?'🔔':'✓')}</span><span>${escapeHtml(msg)}</span>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateX(30px)'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 3200);
+}
+
+// ---------- modal helper ----------
+function openModal(title, bodyHtml, footHtml){
+  document.getElementById('modal-box').innerHTML = `
+    <div class="modal-head"><h3>${title}</h3><button class="close-x" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">${bodyHtml}</div>
+    ${footHtml? `<div class="modal-foot">${footHtml}</div>` : ''}
+  `;
+  document.getElementById('modal-bg').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('show'); }
+document.getElementById('modal-bg').addEventListener('click', e=>{ if(e.target.id==='modal-bg') closeModal(); });
+
+/* =================================================================
+   LOGIN
+   ================================================================= */
+let selectedRole = null;
+
+function initLogin(){
+  document.querySelectorAll('.role-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      selectedRole = tab.dataset.role;
+      renderLoginFields();
+    });
+  });
+  document.getElementById('btn-login').addEventListener('click', doLogin);
+}
+
+function renderLoginFields(){
+  const box = document.getElementById('login-fields');
+  document.getElementById('login-error').style.display='none';
+  document.getElementById('btn-login').style.display='inline-flex';
+  if(selectedRole==='directeur'){
+    box.innerHTML = `
+      <div class="field"><label>Nom du directeur / de la directrice</label><input id="f-nom" placeholder="Ex : Mr RAKOTO"></div>
+      <div class="field"><label>Code d'accès Direction</label><input id="f-code" type="password" placeholder="Code maître"></div>`;
+  } else if(selectedRole==='bureau'){
+    box.innerHTML = `
+      <div class="field"><label>Votre nom</label><input id="f-nom" placeholder="Ex : M. RABE, secrétaire"></div>
+      <div class="field"><label>Code d'accès Bureau</label><input id="f-code" type="password" placeholder="Fourni par la Direction"></div>`;
+  } else if(selectedRole==='prof'){
+    box.innerHTML = `
+      <div class="field"><label>Votre nom (enregistré par la direction)</label><input id="f-nom" placeholder="Ex : M. RAZAFY"></div>
+      <div class="field"><label>Code d'accès Professeur</label><input id="f-code" type="password" placeholder="Fourni par la Direction"></div>`;
+  } else if(selectedRole==='parent'){
+    box.innerHTML = `
+      <div class="field"><label>Matricule de l'élève</label><input id="f-matricule" placeholder="Ex : LP-2026-0001"></div>
+      <div class="field"><label>Code d'accès Parent</label><input id="f-code" type="password" placeholder="Remis lors de l'inscription"></div>`;
+  }
+}
+
+async function doLogin(){
+  const errBox = document.getElementById('login-error');
+  errBox.style.display='none';
+  if(!selectedRole){ showLoginError('Veuillez choisir un profil.'); return; }
+
+  if(selectedRole==='directeur'){
+    const nom = val('f-nom'), code = val('f-code');
+    if(!nom||!code) return showLoginError('Veuillez remplir tous les champs.');
+    if(code !== DB.config.codes.directeur) return showLoginError('Code Direction incorrect.');
+    let p = DB.personnel.find(x=>x.role==='directeur' && x.nom.toLowerCase()===nom.toLowerCase());
+    if(!p){ p = { id: uid('pers'), nom, role:'directeur', actif:true }; DB.personnel.push(p); await saveDB(); }
+    SESSION = { role:'directeur', id:p.id, nom:p.nom };
+  }
+  else if(selectedRole==='bureau'){
+    const nom = val('f-nom'), code = val('f-code');
+    if(!nom||!code) return showLoginError('Veuillez remplir tous les champs.');
+    if(code !== DB.config.codes.bureau) return showLoginError('Code Bureau incorrect.');
+    let p = DB.personnel.find(x=>x.role==='bureau' && x.nom.toLowerCase()===nom.toLowerCase());
+    if(!p){ p = { id: uid('pers'), nom, role:'bureau', actif:true }; DB.personnel.push(p); await saveDB(); }
+    SESSION = { role:'bureau', id:p.id, nom:p.nom };
+  }
+  else if(selectedRole==='prof'){
+    const nom = val('f-nom'), code = val('f-code');
+    if(!nom||!code) return showLoginError('Veuillez remplir tous les champs.');
+    if(code !== DB.config.codes.prof) return showLoginError('Code Professeur incorrect.');
+    let p = DB.personnel.find(x=>x.role==='prof' && x.nom.toLowerCase()===nom.toLowerCase());
+    if(!p){
+      showLoginError("Ce nom n'est pas enregistré comme professeur par la Direction. Demandez à la Direction de vous ajouter dans « Personnel ».");
+      return;
+    }
+    SESSION = { role:'prof', id:p.id, nom:p.nom };
+  }
+  else if(selectedRole==='parent'){
+    const matricule = val('f-matricule'), code = val('f-code');
+    if(!matricule||!code) return showLoginError('Veuillez remplir tous les champs.');
+    const eleve = DB.eleves.find(e=>e.matricule.toLowerCase()===matricule.toLowerCase());
+    if(!eleve || eleve.codeParent !== code) return showLoginError('Matricule ou code parent incorrect.');
+    SESSION = { role:'parent', id:eleve.id, nom: eleve.parentNom || (eleve.prenom+' '+eleve.nom) };
+  }
+
+  localStorage.setItem('printania_session', JSON.stringify(SESSION));
+  enterApp(defaultRouteFor(SESSION.role));
+}
+function enterApp(route){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  buildNav();
+  navigateTo(ROUTES[route]? route : defaultRouteFor(SESSION.role));
+}
+function restoreSession(){
+  try{
+    const s=JSON.parse(localStorage.getItem('printania_session')||'null');
+    if(!s) return false;
+    // revalider la session contre les données
+    if(s.role==='parent'){ if(!DB.eleves.find(e=>e.id===s.id)) return false; }
+    else if(!DB.personnel.find(p=>p.id===s.id)) return false;
+    SESSION=s;
+    enterApp(localStorage.getItem('printania_route')||defaultRouteFor(s.role));
+    return true;
+  }catch(e){ return false; }
+}
+function val(id){ return (document.getElementById(id)?.value||'').trim(); }
+function showLoginError(msg){ const e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }
+
+function logout(){
+  SESSION=null;
+  localStorage.removeItem('printania_session'); localStorage.removeItem('printania_route');
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('login-fields').innerHTML='';
+  document.getElementById('btn-login').style.display='none';
+  selectedRole=null;
+}
+function toggleSidebar(){
+  const sb=document.querySelector('.sidebar');
+  const ov=document.getElementById('sidebar-overlay');
+  if(sb){ sb.classList.toggle('open'); ov.classList.toggle('show'); }
+}
+
+/* =================================================================
+   NAVIGATION / SIDEBAR
+   ================================================================= */
+const NAV_BY_ROLE = {
+  directeur:[
+    {group:"Vue d'ensemble", items:[
+      {id:'dashboard', ic:'🏛️', label:"Tableau de bord"},
+      {id:'rapports', ic:'📊', label:"Rapports"},
+    ]},
+    {group:"Pédagogie", items:[
+      {id:'eleves', ic:'🎓', label:"Élèves & Inscriptions"},
+      {id:'notes', ic:'📝', label:"Notes & Bulletins"},
+      {id:'examens', ic:'📋', label:"Examens"},
+      {id:'classes-matieres', ic:'📚', label:"Classes & Matières"},
+      {id:'emploi-du-temps', ic:'🗓️', label:"Emploi du temps"},
+      {id:'historique-scolaire', ic:'📜', label:"Historique scolaire"},
+    ]},
+    {group:"Présence & Absences", items:[
+      {id:'presences', ic:'✅', label:"Appel & Présences"},
+      {id:'absences', ic:'🔴', label:"Absences"},
+    ]},
+    {group:"Services", items:[
+      {id:'cantine', ic:'🍽️', label:"Cantine"},
+      {id:'transport', ic:'🚌', label:"Transport"},
+      {id:'uniformes', ic:'👕', label:"Uniformes"},
+      {id:'autres-frais', ic:'💳', label:"Autres frais"},
+      {id:'inventaire', ic:'📦', label:"Inventaire matériel"},
+    ]},
+    {group:"Vie scolaire", items:[
+      {id:'avis', ic:'📣', label:"Avis & Avertissements"},
+      {id:'convocations', ic:'📨', label:"Convocations parentales"},
+      {id:'evenements', ic:'🎉', label:"Fêtes & Voyages"},
+      {id:'feedback', ic:'⭐', label:"Avis des parents"},
+    ]},
+    {group:"Administration", items:[
+      {id:'personnel', ic:'👥', label:"Personnel"},
+      {id:'messages', ic:'💬', label:"Messagerie interne"},
+      {id:'factures', ic:'🧾', label:"Facturation & Écolage"},
+      {id:'tarifs-classes', ic:'💲', label:"Tarifs par classe"},
+    ]},
+    {group:"Direction uniquement", items:[
+      {id:'finances', ic:'💰', label:"Finances & Bénéfices"},
+      {id:'contrats', ic:'📑', label:"Contrats du personnel"},
+      {id:'securite', ic:'🔐', label:"Sécurité & Codes d'accès"},
+    ]},
+  ],
+  bureau:[
+    {group:"Vue d'ensemble", items:[
+      {id:'dashboard', ic:'🏛️', label:"Tableau de bord"},
+      {id:'rapports', ic:'📊', label:"Rapports"},
+    ]},
+    {group:"Pédagogie", items:[
+      {id:'eleves', ic:'🎓', label:"Élèves & Inscriptions"},
+      {id:'notes', ic:'📝', label:"Notes & Bulletins"},
+      {id:'examens', ic:'📋', label:"Examens"},
+      {id:'classes-matieres', ic:'📚', label:"Classes & Matières"},
+      {id:'emploi-du-temps', ic:'🗓️', label:"Emploi du temps"},
+      {id:'historique-scolaire', ic:'📜', label:"Historique scolaire"},
+    ]},
+    {group:"Présence & Absences", items:[
+      {id:'presences', ic:'✅', label:"Appel & Présences"},
+      {id:'absences', ic:'🔴', label:"Absences"},
+    ]},
+    {group:"Services", items:[
+      {id:'cantine', ic:'🍽️', label:"Cantine"},
+      {id:'transport', ic:'🚌', label:"Transport"},
+      {id:'uniformes', ic:'👕', label:"Uniformes"},
+      {id:'autres-frais', ic:'💳', label:"Autres frais"},
+      {id:'inventaire', ic:'📦', label:"Inventaire matériel"},
+    ]},
+    {group:"Vie scolaire", items:[
+      {id:'avis', ic:'📣', label:"Avis & Avertissements"},
+      {id:'convocations', ic:'📨', label:"Convocations parentales"},
+      {id:'evenements', ic:'🎉', label:"Fêtes & Voyages"},
+      {id:'feedback', ic:'⭐', label:"Avis des parents"},
+    ]},
+    {group:"Administration", items:[
+      {id:'personnel', ic:'👥', label:"Personnel"},
+      {id:'messages', ic:'💬', label:"Messagerie interne"},
+      {id:'factures', ic:'🧾', label:"Facturation & Écolage"},
+      {id:'tarifs-classes', ic:'💲', label:"Tarifs par classe"},
+    ]},
+  ],
+  prof:[
+    {group:"Mon espace", items:[
+      {id:'dashboard', ic:'🍎', label:"Tableau de bord"},
+      {id:'mes-classes', ic:'🎓', label:"Mes classes & élèves"},
+      {id:'mes-notes', ic:'📝', label:"Saisie des notes"},
+      {id:'journal-prof', ic:'📔', label:"Journal de classe"},
+      {id:'mon-emploi-du-temps', ic:'🗓️', label:"Mon emploi du temps"},
+    ]},
+    {group:"Présences", items:[
+      {id:'appel', ic:'✅', label:"Faire l'appel"},
+    ]},
+    {group:"Communication", items:[
+      {id:'avis', ic:'📣', label:"Avis sur élèves"},
+      {id:'messages', ic:'💬', label:"Messagerie interne"},
+    ]},
+  ],
+  parent:[
+    {group:"Mon enfant", items:[
+      {id:'dashboard', ic:'👪', label:"Vue d'ensemble"},
+      {id:'p-notes', ic:'📝', label:"Notes & Bulletin"},
+      {id:'p-avis', ic:'📣', label:"Avis & Avertissements"},
+      {id:'p-convocations', ic:'📨', label:"Convocations"},
+      {id:'p-absences', ic:'🔴', label:"Absences"},
+      {id:'p-emploi-du-temps', ic:'🗓️', label:"Emploi du temps"},
+      {id:'p-examens', ic:'📋', label:"Examens"},
+    ]},
+    {group:"École", items:[
+      {id:'p-evenements', ic:'🎉', label:"Fêtes & Voyages"},
+      {id:'p-messages', ic:'💬', label:"Messages de la Direction"},
+      {id:'p-feedback', ic:'⭐', label:"Donner mon avis"},
+      {id:'p-factures', ic:'🧾', label:"Écolage & Reçus"},
+    ]},
+  ]
+};
+
+function defaultRouteFor(role){ return 'dashboard'; }
+
+function buildNav(){
+  document.getElementById('who-name').textContent = SESSION.nom;
+  document.getElementById('who-role').textContent = roleLabel(SESSION.role);
+  const groups = NAV_BY_ROLE[SESSION.role];
+  const nav = document.getElementById('nav-container');
+  nav.innerHTML = groups.map(g=>`
+    <div class="nav-group">
+      <div class="nav-label">${g.group}</div>
+      ${g.items.map(it=>{
+        const badge = getNavBadge(it.id);
+        return `<div class="nav-item" data-route="${it.id}" style="position:relative;"><span class="ic">${it.ic}</span>${it.label}${badge? `<span class="msg-badge">${badge}</span>`:''}</div>`;
+      }).join('')}
+    </div>
+  `).join('');
+  nav.querySelectorAll('.nav-item').forEach(el=>{
+    el.addEventListener('click', ()=>navigateTo(el.dataset.route));
+  });
+  document.getElementById('btn-logout').addEventListener('click', logout, {once:false});
+}
+
+function getNavBadge(routeId){
+  if(!SESSION) return 0;
+  if(routeId==='messages'||routeId==='p-messages'){
+    return unreadMessageCount();
+  }
+  if(routeId==='p-avis'){
+    // avis non lus pour parent
+    return DB.avis.filter(a=>a.eleveId===SESSION.id && !(a.readBy||[]).includes(SESSION.id)).length || 0;
+  }
+  if(routeId==='p-convocations'){
+    return DB.convocations.filter(c=>c.eleveId===SESSION.id && c.statut==='En attente' && !(c.readBy||[]).includes(SESSION.id)).length || 0;
+  }
+  return 0;
+}
+
+function unreadMessageCount(){
+  const msgs = DB.messages.filter(m=>{
+    if(m.fromRole===SESSION.role && m.from===SESSION.nom) return false; // mes propres messages
+    if(m.to==='all') return true;
+    if(m.to===SESSION.role) return true;
+    if(SESSION.role==='parent' && m.to==='all') return true;
+    return false;
+  });
+  return msgs.filter(m=>!(m.readBy||[]).includes(SESSION.id)).length;
+}
+function roleLabel(r){ return {directeur:"Direction",bureau:"Personnel de Bureau",prof:"Professeur",parent:"Espace Parent"}[r]||r; }
+
+let currentRoute=null;
+function navigateTo(route){
+  currentRoute = route;
+  try{ localStorage.setItem('printania_route', route); }catch(e){}
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active', el.dataset.route===route));
+  const renderer = ROUTES[route];
+  document.getElementById('main-content').innerHTML = renderer? renderer() : `<div class="empty-state">Page introuvable.</div>`;
+  document.getElementById('main-content').scrollTop = 0;
+  attachRouteEvents(route);
+}
+function refresh(){ navigateTo(currentRoute); }
+
+/* =================================================================
+   UTILITAIRES MÉTIER
+   ================================================================= */
+function classOptions(selected){
+  return DB.config.classes.map(c=>`<option value="${escapeHtml(c)}" ${c===selected?'selected':''}>${escapeHtml(c)}</option>`).join('');
+}
+function matiereOptions(selected){
+  return DB.config.matieres.map(m=>`<option value="${escapeHtml(m)}" ${m===selected?'selected':''}>${escapeHtml(m)}</option>`).join('');
+}
+function elevesOfClass(classe){ return DB.eleves.filter(e=>e.classe===classe && e.statut!=='retiré'); }
+function eleveById(id){ return DB.eleves.find(e=>e.id===id); }
+function personnelById(id){ return DB.personnel.find(p=>p.id===id); }
+function profMatieresClasses(profId){
+  // matieres/classes enseignées = déduites des notes existantes + assignations explicites
+  const p = personnelById(profId);
+  return p && p.assignations ? p.assignations : [];
+}
+function isSecondaire(classe){ return NIV_SECONDAIRE.includes(classe); }
+
+function moyenneEleve(eleveId, trimestre, classe){
+  const notes = DB.notes.filter(n=>n.eleveId===eleveId && n.trimestre===trimestre);
+  if(!notes.length) return null;
+  let totalPts=0, totalCoef=0;
+  notes.forEach(n=>{
+    const sur20 = (n.note/n.bareme)*20;
+    totalPts += sur20*n.coef;
+    totalCoef += n.coef;
+  });
+  if(totalCoef===0) return null;
+  return totalPts/totalCoef;
+}
+function rangsClasse(classe, trimestre){
+  const eleves = elevesOfClass(classe);
+  const list = eleves.map(e=>({eleve:e, moy: moyenneEleve(e.id, trimestre, classe)}))
+    .filter(x=>x.moy!==null)
+    .sort((a,b)=>b.moy-a.moy);
+  const rangMap={};
+  list.forEach((x,i)=>{ rangMap[x.eleve.id]=i+1; });
+  return {rangMap, total:list.length, generalAvg: list.length? (list.reduce((s,x)=>s+x.moy,0)/list.length):null};
+}
+function matiereDetailEleve(eleveId, trimestre){
+  const notes = DB.notes.filter(n=>n.eleveId===eleveId && n.trimestre===trimestre);
+  const byMat = {};
+  notes.forEach(n=>{
+    if(!byMat[n.matiere]) byMat[n.matiere]={notes:[],coef:n.coef};
+    byMat[n.matiere].notes.push(n);
+  });
+  return Object.keys(byMat).map(mat=>{
+    const arr = byMat[mat].notes;
+    const moy20 = arr.reduce((s,n)=>s+(n.note/n.bareme)*20,0)/arr.length;
+    return { matiere:mat, coef:arr[0].coef, moyenne:moy20, detail: arr.map(n=>`${n.note}/${n.bareme}`).join(', ') };
+  });
+}
+
+function appreciationFromMoy(m){
+  if(m===null) return "—";
+  if(m>=16) return "Excellent";
+  if(m>=14) return "Très bien";
+  if(m>=12) return "Bien";
+  if(m>=10) return "Passable";
+  if(m>=8) return "Insuffisant";
+  return "Faible — travail requis";
+}
+
+/* =================================================================
+   ROUTES — VUES
+   ================================================================= */
+const ROUTES = {};
+
+/* ---------- DASHBOARD ---------- */
+ROUTES.dashboard = function(){
+  if(SESSION.role==='prof') return renderProfDashboard();
+  if(SESSION.role==='parent') return renderParentDashboard();
+  return renderAdminDashboard();
+};
+
+function renderAdminDashboard(){
+  const totalEleves = DB.eleves.filter(e=>e.statut!=='retiré').length;
+  const totalClasses = DB.config.classes.length;
+  const totalProfs = DB.personnel.filter(p=>p.role==='prof').length;
+  const convocEnAttente = DB.convocations.filter(c=>c.statut==='En attente').length;
+  const recettes = DB.factures.filter(f=>f.statut==='Payé').reduce((s,f)=>s+f.montant,0);
+  const depenses = DB.finances.depenses.reduce((s,d)=>s+d.montant,0);
+  const benefice = recettes-depenses;
+
+  const direction = SESSION.role==='directeur';
+
+  return `
+  <div class="topbar">
+    <div><div class="breadcrumb">La Printania</div><h1>Tableau de bord — ${roleLabel(SESSION.role)}</h1></div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="navigateTo('eleves')">🎓 Élèves</button>
+      <button class="btn btn-primary btn-sm" onclick="navigateTo('notes')">📝 Bulletins</button>
+    </div>
+  </div>
+  <div class="grid cols-4">
+    <div class="card stat-card"><div class="ic-bg">🎓</div><div class="label">Élèves inscrits</div><div class="val">${totalEleves}</div><div class="delta">Année ${DB.config.anneeScolaire}</div></div>
+    <div class="card stat-card"><div class="ic-bg">📚</div><div class="label">Classes actives</div><div class="val">${totalClasses}</div></div>
+    <div class="card stat-card"><div class="ic-bg">🍎</div><div class="label">Professeurs</div><div class="val">${totalProfs}</div></div>
+    <div class="card stat-card"><div class="ic-bg">📨</div><div class="label">Convocations en attente</div><div class="val">${convocEnAttente}</div></div>
+  </div>
+
+  ${direction? `
+  <div class="grid cols-3" style="margin-top:18px;">
+    <div class="card stat-card"><div class="ic-bg">💵</div><div class="label">Recettes encaissées</div><div class="val">${fmtAr(recettes)}</div></div>
+    <div class="card stat-card"><div class="ic-bg">📉</div><div class="label">Dépenses totales</div><div class="val">${fmtAr(depenses)}</div></div>
+    <div class="card stat-card"><div class="ic-bg">📈</div><div class="label">Bénéfice net</div><div class="val" style="color:${benefice>=0?'var(--ok)':'var(--danger)'}">${fmtAr(benefice)}</div></div>
+  </div>` : `<div class="lock-note" style="margin-top:18px;">🔒 Les données financières (recettes, dépenses, bénéfices, contrats) sont réservées à la Direction.</div>`}
+
+  <div class="section-title"><h2>Activité récente</h2><div class="line"></div></div>
+  <div class="grid cols-2">
+    <div class="card">
+      <b>Derniers élèves inscrits</b><hr class="sep">
+      ${recentList(DB.eleves.slice(-5).reverse().map(e=>`${e.prenom} ${e.nom} — <span class="pill pill-rose">${e.classe}</span>`))}
+    </div>
+    <div class="card">
+      <b>Dernières convocations</b><hr class="sep">
+      ${recentList(DB.convocations.slice(-5).reverse().map(c=>`${eleveLabel(c.eleveId)} — ${c.motif} <span class="pill pill-gold">${c.statut}</span>`))}
+    </div>
+  </div>
+  `;
+}
+function fmtAr(n){ return (n||0).toLocaleString('fr-FR')+' Ar'; }
+function recentList(arr){ return arr.length? `<div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">${arr.map(a=>`<div>${a}</div>`).join('')}</div>` : `<div class="muted">Aucune donnée pour le moment.</div>`; }
+function eleveLabel(id){ const e=eleveById(id); return e? `${e.prenom} ${e.nom} (${e.classe})` : '—'; }
+
+function renderProfDashboard(){
+  const p = personnelById(SESSION.id);
+  const assign = p.assignations||[];
+  const classes = [...new Set(assign.map(a=>a.classe))];
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Espace Professeur</div><h1>Bonjour, ${escapeHtml(SESSION.nom)}</h1></div></div>
+  <div class="grid cols-3">
+    <div class="card stat-card"><div class="ic-bg">🎓</div><div class="label">Classes tenues</div><div class="val">${classes.length}</div></div>
+    <div class="card stat-card"><div class="ic-bg">📚</div><div class="label">Matières assignées</div><div class="val">${assign.length}</div></div>
+    <div class="card stat-card"><div class="ic-bg">👨‍🎓</div><div class="label">Élèves au total</div><div class="val">${classes.reduce((s,c)=>s+elevesOfClass(c).length,0)}</div></div>
+  </div>
+  <div class="section-title"><h2>Mes affectations</h2><div class="line"></div></div>
+  ${assign.length? `<div class="chip-row">${assign.map(a=>`<span class="chip">🎓 ${a.classe} — 📚 ${a.matiere}</span>`).join('')}</div>` :
+    `<div class="empty-state"><div class="ic">📭</div>Aucune classe ne vous a encore été assignée. Demandez à la Direction ou au Bureau de vous affecter dans « Personnel ».</div>`}
+  `;
+}
+
+function renderParentDashboard(){
+  const e = eleveById(SESSION.id);
+  if(!e) return `<div class="empty-state">Élève introuvable.</div>`;
+  const tri = currentTrimestre();
+  const moy = moyenneEleve(e.id, tri);
+  const {rangMap,total} = rangsClasse(e.classe, tri);
+  const avisRecents = DB.avis.filter(a=>a.eleveId===e.id).slice(-3).reverse();
+  const convocs = DB.convocations.filter(c=>c.eleveId===e.id && c.statut==='En attente');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Espace Parent</div><h1>${e.prenom} ${e.nom}</h1></div>
+    <span class="pill pill-rose">${e.classe}</span>
+  </div>
+  ${convocs.length? `<div class="card" style="border-left:4px solid var(--danger);margin-bottom:18px;"><b style="color:var(--danger);">📨 Convocation parentale en attente</b><p style="margin:6px 0 0;font-size:13.5px;">${escapeHtml(convocs[0].motif)} — prévue le ${fmtDate(convocs[0].date)} ${convocs[0].lieu?('à '+escapeHtml(convocs[0].lieu)):''}</p></div>`:''}
+  <div class="grid cols-3">
+    <div class="card stat-card"><div class="ic-bg">📊</div><div class="label">Moyenne ${tri}</div><div class="val">${moy!==null?moy.toFixed(2):'—'} <span style="font-size:14px;color:var(--gray);">/20</span></div></div>
+    <div class="card stat-card"><div class="ic-bg">🏅</div><div class="label">Rang en classe</div><div class="val">${rangMap[e.id]?rangMap[e.id]+'ᵉ':'—'}<span style="font-size:14px;color:var(--gray);"> / ${total}</span></div></div>
+    <div class="card stat-card"><div class="ic-bg">📨</div><div class="label">Convocations en attente</div><div class="val">${convocs.length}</div></div>
+  </div>
+  <div class="section-title"><h2>Derniers avis de la Direction & des Professeurs</h2><div class="line"></div></div>
+  ${avisRecents.length? avisRecents.map(a=>renderAvisCard(a)).join('') : `<div class="empty-state"><div class="ic">📭</div>Aucun avis pour le moment.</div>`}
+  `;
+}
+function currentTrimestre(){ return window.__currentTri || "Trimestre 1"; }
+
+function renderAvisCard(a){
+  const colors={avertissement:'pill-danger', renvoi:'pill-danger', felicitation:'pill-ok', avis:'pill-navy'};
+  const labels={avertissement:'⚠️ Avertissement', renvoi:'🚫 Renvoi', felicitation:'🏅 Félicitations', avis:'📣 Avis'};
+  return `<div class="card" style="margin-bottom:12px;">
+    <div class="flex" style="justify-content:space-between;">
+      <span class="pill ${colors[a.type]||'pill-navy'}">${labels[a.type]||a.type}</span>
+      <span class="muted">${fmtDate(a.date)}</span>
+    </div>
+    <p style="margin:10px 0 4px;font-size:13.5px;">${escapeHtml(a.texte)}</p>
+    <div class="muted">— ${escapeHtml(a.auteur)} (${roleLabel(a.role)})</div>
+  </div>`;
+}
+
+/* ---------- ÉLÈVES & INSCRIPTIONS ---------- */
+ROUTES.eleves = function(){
+  const rows = DB.eleves.slice().reverse().map(e=>`
+    <tr>
+      <td><div class="flex gap10">
+        <div class="avatar" style="width:34px;height:34px;">${e.photo?`<img src="${e.photo}" alt="">`:(e.prenom||'?').slice(0,1)}</div>
+        <b>${escapeHtml(e.matricule)}</b>
+      </div></td>
+      <td>${escapeHtml(e.prenom)} ${escapeHtml(e.nom)}</td>
+      <td><span class="pill pill-rose">${escapeHtml(e.classe)}</span></td>
+      <td>${escapeHtml(e.parentNom||'—')}</td>
+      <td>${escapeHtml(e.parentTel||'—')}</td>
+      <td>${fmtDate(e.dateInscription)}</td>
+      <td><span class="pill ${e.statut==='retiré'?'pill-danger':'pill-ok'}">${e.statut||'Actif'}</span></td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="viewEleve('${e.id}')">Voir</button>
+        <button class="btn btn-gold btn-sm" onclick="openCodeParent('${e.id}')">Code parent</button>
+        <button class="btn btn-outline btn-sm" onclick="uploadElevePhoto('${e.id}')">📷</button>
+      </td>
+    </tr>`).join('');
+  return `
+  <div class="topbar">
+    <div><div class="breadcrumb">Pédagogie</div><h1>Élèves & Inscriptions</h1></div>
+    <div class="topbar-actions"><button class="btn btn-primary" onclick="openInscriptionForm()">＋ Nouvelle inscription</button></div>
+  </div>
+  <div class="card">
+    <div class="flex gap10" style="margin-bottom:16px;">
+      <div class="searchbar"><span class="ic">🔎</span><input placeholder="Rechercher un élève…" oninput="filterTable(this,'tbl-eleves')"></div>
+      <select onchange="filterByClass(this)" style="padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;">
+        <option value="">Toutes les classes</option>
+        ${classOptions()}
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table id="tbl-eleves">
+        <thead><tr><th>Photo / Matricule</th><th>Nom & Prénom</th><th>Classe</th><th>Parent / Tuteur</th><th>Téléphone</th><th>Inscription</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="8"><div class="empty-state"><div class="ic">🎓</div>Aucun élève inscrit pour le moment.</div></td></tr>`}</tbody>
+      </table>
+    </div>
+  </div>`;
+};
+
+function openInscriptionForm(){
+  openModal("Nouvelle inscription", `
+    <div class="grid cols-2">
+      <div class="field"><label>Prénom</label><input id="ins-prenom"></div>
+      <div class="field"><label>Nom</label><input id="ins-nom"></div>
+      <div class="field"><label>Sexe</label><select id="ins-sexe"><option>Masculin</option><option>Féminin</option></select></div>
+      <div class="field"><label>Date de naissance</label><input id="ins-dn" type="date"></div>
+      <div class="field"><label>Classe</label><select id="ins-classe">${classOptions()}</select></div>
+      <div class="field"><label>Date d'inscription</label><input id="ins-date" type="date" value="${todayISO()}"></div>
+      <div class="field"><label>Nom du parent / tuteur</label><input id="ins-parentnom"></div>
+      <div class="field"><label>Téléphone du parent</label><input id="ins-parenttel"></div>
+    </div>
+    <div class="lock-note">Un matricule et un code d'accès parent seront générés automatiquement. L'élève sera enregistré directement dans les données de sa classe.</div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveInscription()">Enregistrer l'inscription</button>`);
+}
+
+async function saveInscription(){
+  const prenom=val('ins-prenom'), nom=val('ins-nom'), classe=val('ins-classe');
+  if(!prenom||!nom||!classe){ toast('Veuillez remplir prénom, nom et classe.','error'); return; }
+  const annee = DB.config.anneeScolaire.split('-')[0];
+  const num = String(DB.eleves.length+1).padStart(4,'0');
+  const matricule = `LP-${annee}-${num}`;
+  const codeParent = genCode(6);
+  const eleve = {
+    id: uid('el'), matricule, codeParent,
+    prenom, nom, sexe: val('ins-sexe'), dateNaissance: val('ins-dn'),
+    classe, parentNom: val('ins-parentnom'), parentTel: val('ins-parenttel'),
+    dateInscription: val('ins-date')||todayISO(), statut:'Actif'
+  };
+  DB.eleves.push(eleve);
+  // facture d'inscription automatique avec tarif par classe
+  DB.factures.push({
+    id: uid('fac'), eleveId: eleve.id, type:'inscription', libelle:"Droit d'inscription",
+    montant: getTarif(classe,'inscription'), mois:'-', date: todayISO(), statut:'À payer',
+    numero: 'FAC-'+genCode(5), auteur: SESSION.nom
+  });
+  await saveDB();
+  closeModal();
+  toast(`${prenom} ${nom} inscrit(e) en ${classe}. Matricule : ${matricule}`);
+  navigateTo('eleves');
+  setTimeout(()=>openCodeParent(eleve.id), 350);
+}
+
+function openCodeParent(eleveId){
+  const e = eleveById(eleveId);
+  openModal("Accès Espace Parent", `
+    <div style="text-align:center;padding:10px 0;">
+      <p class="muted">Communiquez ces identifiants à la famille de</p>
+      <h3 style="margin:6px 0;">${e.prenom} ${e.nom}</h3>
+      <div class="grid cols-2" style="margin-top:16px;">
+        <div class="card" style="background:var(--rose-soft);"><div class="muted">Matricule</div><div class="mono-num" style="font-size:22px;color:var(--rose-deep);">${e.matricule}</div></div>
+        <div class="card" style="background:#fbf1da;"><div class="muted">Code Parent</div><div class="mono-num" style="font-size:22px;color:#8a6d1f;">${e.codeParent}</div></div>
+      </div>
+    </div>
+  `, `<button class="btn btn-primary btn-block" onclick="closeModal()">Fermer</button>`);
+}
+
+function viewEleve(id){
+  const e = eleveById(id);
+  const factures = DB.factures.filter(f=>f.eleveId===id);
+  openModal(`${e.prenom} ${e.nom}`, `
+    <div class="grid cols-2" style="margin-bottom:14px;">
+      <div><span class="muted">Matricule</span><br><b>${e.matricule}</b></div>
+      <div><span class="muted">Classe</span><br><span class="pill pill-rose">${e.classe}</span></div>
+      <div><span class="muted">Naissance</span><br>${fmtDate(e.dateNaissance)}</div>
+      <div><span class="muted">Sexe</span><br>${e.sexe||'—'}</div>
+      <div><span class="muted">Parent / Tuteur</span><br>${escapeHtml(e.parentNom||'—')}</div>
+      <div><span class="muted">Téléphone</span><br>${escapeHtml(e.parentTel||'—')}</div>
+    </div>
+    <hr class="sep">
+    <b>Suivi écolage</b>
+    <div style="margin-top:8px;">${factures.length? factures.map(f=>`<div class="flex" style="justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;"><span>${f.libelle} ${f.mois!=='-'?'('+f.mois+')':''}</span><span class="pill ${f.statut==='Payé'?'pill-ok':'pill-danger'}">${f.statut} — ${fmtAr(f.montant)}</span></div>`).join(''):'<div class="muted">Aucune facture.</div>'}</div>
+    <div class="modal-foot" style="padding:18px 0 0;">
+      <button class="btn btn-outline btn-sm" onclick="closeModal(); document.getElementById('${SESSION.role==='directeur'||SESSION.role==='bureau'?'noop':'noop'}')">Fermer</button>
+      <button class="btn btn-danger btn-sm" onclick="retireEleve('${e.id}')">Marquer retiré(e)</button>
+      <button class="btn btn-gold btn-sm" onclick="openCodeParent('${e.id}')">Code parent</button>
+    </div>
+  `);
+}
+async function retireEleve(id){
+  const e = eleveById(id); e.statut='retiré'; await saveDB(); closeModal(); toast('Élève marqué(e) comme retiré(e).','warn'); refresh();
+}
+
+function filterTable(input, tableId){
+  const q = input.value.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr`).forEach(tr=>{
+    tr.style.display = tr.textContent.toLowerCase().includes(q)? '' : 'none';
+  });
+}
+function filterByClass(sel){
+  const c = sel.value;
+  document.querySelectorAll(`#tbl-eleves tbody tr`).forEach(tr=>{
+    tr.style.display = (!c || tr.children[2].textContent.trim()===c)? '' : 'none';
+  });
+}
+
+/* ---------- CLASSES & MATIÈRES (paramètres) ---------- */
+ROUTES['classes-matieres'] = function(){
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Paramètres</div><h1>Classes & Matières</h1></div></div>
+  <div class="lock-note">Ces éléments sont enregistrés une seule fois comme paramètres : plus besoin de les retaper à chaque inscription ou saisie de notes.</div>
+  <div class="grid cols-2">
+    <div class="card">
+      <b>Classes de l'établissement</b><hr class="sep">
+      <div class="chip-row" id="chips-classes">${DB.config.classes.map(c=>`<span class="chip">${escapeHtml(c)} <span class="x" onclick="removeClasse('${escapeHtml(c)}')">✕</span></span>`).join('')}</div>
+      <div class="flex gap8" style="margin-top:16px;">
+        <input id="new-classe" placeholder="Ex : Terminale, Section Anglaise…" style="flex:1;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;">
+        <button class="btn btn-primary btn-sm" onclick="addClasse()">＋ Ajouter</button>
+      </div>
+    </div>
+    <div class="card">
+      <b>Matières enseignées</b><hr class="sep">
+      <div class="chip-row" id="chips-matieres">${DB.config.matieres.map(m=>`<span class="chip">${escapeHtml(m)} <span class="x" onclick="removeMatiere('${escapeHtml(m)}')">✕</span></span>`).join('')}</div>
+      <div class="flex gap8" style="margin-top:16px;">
+        <input id="new-matiere" placeholder="Ex : Informatique, Philosophie…" style="flex:1;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;">
+        <button class="btn btn-primary btn-sm" onclick="addMatiere()">＋ Ajouter</button>
+      </div>
+    </div>
+  </div>
+  `;
+};
+async function addClasse(){
+  const v = val('new-classe'); if(!v) return;
+  if(!DB.config.classes.includes(v)) DB.config.classes.push(v);
+  await saveDB(); toast('Classe ajoutée comme paramètre permanent.'); refresh();
+}
+async function removeClasse(c){
+  DB.config.classes = DB.config.classes.filter(x=>x!==c); await saveDB(); refresh();
+}
+async function addMatiere(){
+  const v = val('new-matiere'); if(!v) return;
+  if(!DB.config.matieres.includes(v)) DB.config.matieres.push(v);
+  await saveDB(); toast('Matière ajoutée comme paramètre permanent.'); refresh();
+}
+async function removeMatiere(m){
+  DB.config.matieres = DB.config.matieres.filter(x=>x!==m); await saveDB(); refresh();
+}
+
+/* ---------- PERSONNEL ---------- */
+ROUTES.personnel = function(){
+  const rows = DB.personnel.map(p=>`
+    <tr>
+      <td><div class="flex gap10">
+        <div class="avatar">${p.photo?`<img src="${p.photo}" alt="">`:(p.nom||'?').slice(0,1)}</div>
+        ${escapeHtml(p.nom)}
+        </div></td>
+      <td><span class="pill pill-navy">${roleLabel(p.role)}</span></td>
+      <td>${p.role==='prof' && p.assignations? p.assignations.map(a=>`<span class="pill pill-rose" style="margin:1px;">${a.classe} · ${a.matiere}</span>`).join('') : '—'}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="openAssignProf('${p.id}')">${p.role==='prof'?'Affecter classes/matières':'Détails'}</button>
+        <button class="btn btn-outline btn-sm" onclick="uploadPersonnelPhoto('${p.id}')">📷 Photo</button>
+      </td>
+    </tr>`).join('');
+  return `
+  <div class="topbar">
+    <div><div class="breadcrumb">Administration</div><h1>Personnel</h1></div>
+    <div class="topbar-actions"><button class="btn btn-primary" onclick="openAddPersonnel()">＋ Ajouter un membre</button></div>
+  </div>
+  <div class="card">
+    <div class="table-wrap"><table><thead><tr><th>Nom</th><th>Rôle</th><th>Affectations</th><th>Actions</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+  </div>`;
+};
+function openAddPersonnel(){
+  openModal("Ajouter un membre du personnel", `
+    <div class="field"><label>Nom complet</label><input id="pers-nom" placeholder="Ex : M. RAZAFY Jean"></div>
+    <div class="field"><label>Rôle</label><select id="pers-role"><option value="prof">Professeur / Instituteur</option><option value="bureau">Personnel de bureau</option></select></div>
+    <div class="lock-note">Le professeur devra se connecter avec ce nom exact + le code Professeur en vigueur.</div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="savePersonnel()">Ajouter</button>`);
+}
+async function savePersonnel(){
+  const nom = val('pers-nom'), role = document.getElementById('pers-role').value;
+  if(!nom) return toast('Veuillez indiquer un nom.','error');
+  DB.personnel.push({ id: uid('pers'), nom, role, actif:true, assignations: role==='prof'?[]:undefined });
+  await saveDB(); closeModal(); toast('Membre ajouté.'); refresh();
+}
+
+function uploadPersonnelPhoto(id){
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange = async e => {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      const p = personnelById(id); if(!p) return;
+      p.photo = ev.target.result;
+      await saveDB(); toast('Photo mise à jour.'); refresh();
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
+
+function uploadElevePhoto(id){
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange = async e => {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      const el = eleveById(id); if(!el) return;
+      el.photo = ev.target.result;
+      await saveDB(); toast('Photo élève mise à jour.'); refresh();
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
+function openAssignProf(id){
+  const p = personnelById(id);
+  if(p.role!=='prof'){ openModal('Détails', `<p>${p.nom} — ${roleLabel(p.role)}</p>`, `<button class="btn btn-primary" onclick="closeModal()">Fermer</button>`); return; }
+  const list = p.assignations||[];
+  openModal(`Affectations de ${p.nom}`, `
+    <div class="chip-row" id="assign-list" style="margin-bottom:16px;">
+      ${list.map((a,i)=>`<span class="chip">🎓 ${a.classe} · 📚 ${a.matiere} <span class="x" onclick="removeAssign('${id}',${i})">✕</span></span>`).join('') || '<span class="muted">Aucune affectation.</span>'}
+    </div>
+    <div class="grid cols-2">
+      <div class="field"><label>Classe</label><select id="assign-classe">${classOptions()}</select></div>
+      <div class="field"><label>Matière</label><select id="assign-matiere">${matiereOptions()}</select></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Fermer</button><button class="btn btn-primary" onclick="addAssign('${id}')">＋ Ajouter l'affectation</button>`);
+}
+async function addAssign(profId){
+  const p = personnelById(profId);
+  const classe = val('assign-classe'), matiere = val('assign-matiere');
+  p.assignations = p.assignations||[];
+  if(!p.assignations.some(a=>a.classe===classe && a.matiere===matiere)) p.assignations.push({classe,matiere});
+  await saveDB(); toast('Affectation enregistrée.'); openAssignProf(profId);
+}
+async function removeAssign(profId, idx){
+  const p = personnelById(profId); p.assignations.splice(idx,1); await saveDB(); openAssignProf(profId);
+}
+
+/* ---------- NOTES & BULLETINS (admin: vue d'ensemble) ---------- */
+ROUTES.notes = function(){
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Pédagogie</div><h1>Notes & Bulletins</h1></div></div>
+  <div class="lock-note">Les bulletins — même vides, sans notes — sont visibles ici par la Direction et le Bureau uniquement, pour suivi et impression.</div>
+  <div class="card">
+    <div class="grid cols-3" style="margin-bottom:6px;">
+      <div class="field"><label>Classe</label><select id="bull-classe" onchange="renderBulletinList()">${classOptions()}</select></div>
+      <div class="field"><label>Trimestre</label><select id="bull-tri" onchange="renderBulletinList()">
+        <option>Trimestre 1</option><option>Trimestre 2</option><option>Trimestre 3</option></select></div>
+      <div class="field" style="display:flex;align-items:flex-end;"><button class="btn btn-outline btn-block" onclick="renderBulletinList()">Actualiser</button></div>
+    </div>
+    <div id="bulletin-list"></div>
+  </div>`;
+};
+function attachNotesRoute(){ renderBulletinList(); }
+function renderBulletinList(){
+  const classe = val('bull-classe'); const tri = val('bull-tri');
+  window.__currentTri = tri;
+  const eleves = elevesOfClass(classe);
+  const {rangMap} = rangsClasse(classe, tri);
+  const html = eleves.length? `
+    <div class="table-wrap"><table>
+      <thead><tr><th>Matricule</th><th>Élève</th><th>Moyenne</th><th>Rang</th><th>Statut bulletin</th><th>Action</th></tr></thead>
+      <tbody>
+      ${eleves.map(e=>{
+        const moy = moyenneEleve(e.id, tri);
+        return `<tr>
+          <td>${e.matricule}</td><td>${e.prenom} ${e.nom}</td>
+          <td>${moy!==null?moy.toFixed(2):'<span class="muted">vide</span>'}</td>
+          <td>${rangMap[e.id]?rangMap[e.id]+'ᵉ':'<span class="muted">—</span>'}</td>
+          <td>${moy!==null? '<span class="pill pill-ok">Complet</span>':'<span class="pill pill-gold">Bulletin vide</span>'}</td>
+          <td><button class="btn btn-primary btn-sm" onclick="openBulletin('${e.id}','${tri}')">📄 Bulletin</button>
+              <button class="btn btn-outline btn-sm" onclick="previewBulletin('${e.id}','${tri}')">🔎 Aperçu</button></td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table></div>
+  ` : `<div class="empty-state"><div class="ic">🎓</div>Aucun élève dans cette classe.</div>`;
+  document.getElementById('bulletin-list').innerHTML = html;
+}
+
+function moyColor(m){ if(m>=14) return 'bull-moy-good'; if(m>=10) return 'bull-moy-avg'; return 'bull-moy-bad'; }
+
+function buildBulletinHTML(eleveId, tri){
+  const e = eleveById(eleveId);
+  const det = matiereDetailEleve(eleveId, tri);
+  const moyGen = moyenneEleve(eleveId, tri);
+  const {rangMap,total,generalAvg} = rangsClasse(e.classe, tri);
+  const rang = rangMap[eleveId];
+  const lastAvis = DB.avis.filter(a=>a.eleveId===eleveId).slice(-1)[0];
+  return `
+  <div id="print-area">
+  <div class="bulletin-page">
+    <div class="bull-header-band">
+      <div class="bull-crest-new">LP</div>
+      <div class="bull-school-new">
+        <h2>${escapeHtml(DB.config.schoolName)}</h2>
+        <p>📞 034 08 127 56 — Ambositra, Madagascar — Année ${DB.config.anneeScolaire}</p>
+      </div>
+      <div class="bull-title-new">
+        <h1>BULLETIN DE NOTES</h1>
+        <div class="bull-tri">${tri} — CONFIANCE · DISCIPLINE · RÉUSSITE</div>
+      </div>
+    </div>
+
+    <div class="bull-info-bar">
+      <div class="bull-info-pill"><div class="lbl">Élève</div><div class="val">${e.prenom} ${e.nom}</div></div>
+      <div class="bull-info-pill"><div class="lbl">Matricule</div><div class="val">${e.matricule}</div></div>
+      <div class="bull-info-pill"><div class="lbl">Classe</div><div class="val">${e.classe}</div></div>
+      <div class="bull-info-pill"><div class="lbl">Effectif</div><div class="val">${total} élèves</div></div>
+    </div>
+
+    <table class="bull-table">
+      <thead><tr><th>Matière</th><th>Coefficient</th><th>Notes obtenues</th><th>Moyenne / 20</th><th>Appréciation</th></tr></thead>
+      <tbody>
+        ${det.length? det.map(d=>`<tr>
+          <td class="bull-mat-name">${escapeHtml(d.matiere)}</td>
+          <td style="text-align:center;">${d.coef}</td>
+          <td>${d.detail}</td>
+          <td style="text-align:center;" class="bull-moy-cell ${moyColor(d.moyenne)}">${d.moyenne.toFixed(2)}</td>
+          <td>${appreciationFromMoy(d.moyenne)}</td>
+        </tr>`).join('')
+        : `<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;font-style:italic;">Bulletin vide — aucune note saisie pour ce trimestre.</td></tr>`}
+      </tbody>
+    </table>
+
+    <div class="bull-foot-row">
+      <div class="bull-box-new blue">
+        <div class="t">Résultats généraux</div>
+        Moyenne générale : <b class="${moyGen!==null?moyColor(moyGen):''}">${moyGen!==null?moyGen.toFixed(2):'—'} / 20</b><br>
+        Moyenne de la classe : <b>${generalAvg!==null?generalAvg.toFixed(2):'—'} / 20</b><br>
+        Rang : <b>${rang?rang+'ᵉ sur '+total:'—'}</b>
+      </div>
+      <div class="bull-box-new pink">
+        <div class="t" style="color:var(--bull-pink);">Appréciation générale</div>
+        <b style="font-size:13px;">${appreciationFromMoy(moyGen)}</b>
+      </div>
+      <div class="bull-box-new grey">
+        <div class="t" style="color:#555;">Avis du Conseil de classe</div>
+        ${lastAvis? escapeHtml(lastAvis.texte) : '—'}
+      </div>
+    </div>
+
+    <div class="signbox">
+      <div>Le Professeur Principal</div>
+      <div>Les Parents / Tuteurs</div>
+      <div>La Direction</div>
+    </div>
+  </div>
+  </div>`;
+}
+
+function openBulletin(eleveId, tri){
+  const e = eleveById(eleveId);
+  const html = buildBulletinHTML(eleveId, tri);
+  openModal(`Bulletin — ${e.prenom} ${e.nom}`, html, `
+    <button class="btn btn-outline no-print" onclick="closeModal()">Fermer</button>
+    <button class="btn btn-gold no-print" onclick="previewBulletin('${eleveId}','${tri}')">🔎 Aperçu plein écran</button>
+    <button class="btn btn-primary no-print" onclick="window.print()">🖨️ Imprimer / PDF (A4 paysage)</button>
+  `);
+}
+
+function previewBulletin(eleveId, tri){
+  let ov = document.getElementById('bull-preview-overlay');
+  if(!ov){
+    ov = document.createElement('div');
+    ov.id='bull-preview-overlay';
+    ov.className='bull-preview-overlay';
+    ov.innerHTML=`<button class="bull-preview-close no-print" onclick="closeBullPreview()">✕</button><div class="bull-preview-inner" id="bull-preview-inner"></div>`;
+    document.body.appendChild(ov);
+  }
+  document.getElementById('bull-preview-inner').innerHTML = buildBulletinHTML(eleveId, tri);
+  ov.classList.add('show');
+  ov.scrollTop=0;
+  closeModal();
+}
+function closeBullPreview(){
+  const ov=document.getElementById('bull-preview-overlay');
+  if(ov) ov.classList.remove('show');
+}
+
+/* ---------- ESPACE PROFESSEUR : mes classes / mes notes ---------- */
+ROUTES['mes-classes'] = function(){
+  const p = personnelById(SESSION.id);
+  const assign = p.assignations||[];
+  if(!assign.length) return `<div class="topbar"><h1>Mes classes & élèves</h1></div><div class="empty-state"><div class="ic">📭</div>Aucune classe assignée pour le moment.</div>`;
+  const classes = [...new Set(assign.map(a=>a.classe))];
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon espace</div><h1>Mes classes & élèves</h1></div></div>
+  ${classes.map(c=>{
+    const els = elevesOfClass(c);
+    const mats = assign.filter(a=>a.classe===c).map(a=>a.matiere);
+    return `<div class="card" style="margin-bottom:18px;">
+      <div class="flex" style="justify-content:space-between;"><b>🎓 ${c}</b><span class="muted">Matières : ${mats.join(', ')}</span></div>
+      <hr class="sep">
+      <div class="table-wrap"><table><thead><tr><th>Matricule</th><th>Élève</th></tr></thead>
+      <tbody>${els.map(e=>`<tr><td>${e.matricule}</td><td>${e.prenom} ${e.nom}</td></tr>`).join('') || `<tr><td colspan="2" class="muted">Aucun élève.</td></tr>`}</tbody></table></div>
+    </div>`;
+  }).join('')}
+  `;
+};
+
+ROUTES['mes-notes'] = function(){
+  const p = personnelById(SESSION.id);
+  const assign = p.assignations||[];
+  if(!assign.length) return `<div class="topbar"><h1>Saisie des notes</h1></div><div class="empty-state"><div class="ic">📭</div>Aucune affectation. Contactez la Direction.</div>`;
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon espace</div><h1>Saisie des notes</h1></div></div>
+  <div class="card">
+    <div class="grid cols-3">
+      <div class="field"><label>Classe</label><select id="note-classe" onchange="updateMatiereSelect()">${[...new Set(assign.map(a=>a.classe))].map(c=>`<option>${escapeHtml(c)}</option>`).join('')}</select></div>
+      <div class="field"><label>Matière</label><select id="note-matiere"></select></div>
+      <div class="field"><label>Trimestre</label><select id="note-tri"><option>Trimestre 1</option><option>Trimestre 2</option><option>Trimestre 3</option></select></div>
+    </div>
+    <div class="grid cols-2">
+      <div class="field"><label>Barème de la note (ex : 20, 40, 60)</label><input id="note-bareme" type="number" value="20" min="1"></div>
+      <div class="field"><label>Coefficient de la matière</label><input id="note-coef" type="number" value="1" min="1"></div>
+    </div>
+    <button class="btn btn-primary" onclick="loadNoteGrid()">Charger les élèves</button>
+    <div id="note-grid" style="margin-top:20px;"></div>
+  </div>`;
+};
+function updateMatiereSelect(){
+  const p = personnelById(SESSION.id);
+  const classe = val('note-classe');
+  const mats = p.assignations.filter(a=>a.classe===classe).map(a=>a.matiere);
+  document.getElementById('note-matiere').innerHTML = mats.map(m=>`<option>${escapeHtml(m)}</option>`).join('');
+}
+function loadNoteGrid(){
+  updateMatiereSelect();
+  const classe = val('note-classe'), matiere=val('note-matiere'), tri=val('note-tri'), bareme=parseFloat(val('note-bareme'))||20, coef=parseFloat(val('note-coef'))||1;
+  const els = elevesOfClass(classe);
+  const existing = {};
+  DB.notes.filter(n=>n.classe===classe && n.matiere===matiere && n.trimestre===tri).forEach(n=>existing[n.eleveId]=n);
+  document.getElementById('note-grid').innerHTML = `
+    <div class="table-wrap"><table>
+      <thead><tr><th>Élève</th><th>Note (sur ${bareme})</th></tr></thead>
+      <tbody>${els.map(e=>`<tr><td>${e.prenom} ${e.nom}</td><td><input class="note-input" data-eleve="${e.id}" type="number" max="${bareme}" min="0" step="0.25" value="${existing[e.id]?existing[e.id].note:''}"></td></tr>`).join('')}</tbody>
+    </table></div>
+    <button class="btn btn-primary" style="margin-top:16px;" onclick="saveNoteGrid('${classe}','${matiere}','${tri}',${bareme},${coef})">💾 Enregistrer les notes — calcul automatique des moyennes</button>
+  `;
+}
+async function saveNoteGrid(classe, matiere, tri, bareme, coef){
+  const inputs = document.querySelectorAll('#note-grid .note-input');
+  let count=0;
+  inputs.forEach(inp=>{
+    const eleveId = inp.dataset.eleve;
+    const v = inp.value;
+    if(v===''||v===null) return;
+    let existing = DB.notes.find(n=>n.eleveId===eleveId && n.classe===classe && n.matiere===matiere && n.trimestre===tri);
+    if(existing){ existing.note=parseFloat(v); existing.bareme=bareme; existing.coef=coef; }
+    else { DB.notes.push({ id: uid('note'), eleveId, classe, matiere, trimestre:tri, note:parseFloat(v), bareme, coef, profId:SESSION.id, profNom:SESSION.nom, date: todayISO() }); }
+    count++;
+  });
+  await saveDB();
+  toast(`${count} note(s) enregistrée(s). Moyennes, rangs et bulletins mis à jour automatiquement.`);
+}
+
+/* ---------- AVIS / AVERTISSEMENTS ---------- */
+ROUTES.avis = function(){
+  const canTargetAll = true;
+  const rows = DB.avis.slice().reverse().map(a=>`
+    <tr><td>${fmtDate(a.date)}</td><td>${eleveLabel(a.eleveId)}</td>
+    <td><span class="pill ${a.type==='avertissement'||a.type==='renvoi'?'pill-danger':(a.type==='felicitation'?'pill-ok':'pill-navy')}">${a.type}</span></td>
+    <td>${escapeHtml(a.texte)}</td><td>${escapeHtml(a.auteur)}</td>
+    <td>${canDeleteItem(a)?`<button class="btn btn-danger btn-sm" onclick="deleteAvis('${a.id}')">🗑</button>`:''}</td></tr>`).join('');
+  const elList = SESSION.role==='prof' ? assignedElevesForProf(SESSION.id) : DB.eleves;
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Vie scolaire</div><h1>Avis & Avertissements</h1></div>
+    <button class="btn btn-primary" onclick="openAddAvis('${elList.map(e=>e.id).join(',')}')">＋ Nouvel avis</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Élève</th><th>Type</th><th>Texte</th><th>Auteur</th><th></th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:30px;">Aucun avis enregistré.</td></tr>`}</tbody></table></div></div>`;
+};
+function assignedElevesForProf(profId){
+  const p = personnelById(profId);
+  const classes = [...new Set((p.assignations||[]).map(a=>a.classe))];
+  return DB.eleves.filter(e=>classes.includes(e.classe));
+}
+function openAddAvis(){
+  const list = SESSION.role==='prof' ? assignedElevesForProf(SESSION.id) : DB.eleves;
+  openModal("Nouvel avis sur un élève", `
+    <div class="field"><label>Élève</label><select id="avis-eleve">${list.map(e=>`<option value="${e.id}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="field"><label>Type</label><select id="avis-type">
+      <option value="avis">Avis général</option>
+      <option value="felicitation">Félicitations</option>
+      ${SESSION.role!=='prof'? `<option value="avertissement">Avertissement</option><option value="renvoi">Renvoi</option>`:''}
+    </select></div>
+    <div class="field"><label>Message</label><textarea id="avis-texte" placeholder="Décrivez votre avis…"></textarea></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveAvis()">Publier — visible par le parent</button>`);
+}
+async function saveAvis(){
+  const eleveId=val('avis-eleve'), type=val('avis-type'), texte=val('avis-texte');
+  if(!texte) return toast('Veuillez écrire un message.','error');
+  DB.avis.push({ id: uid('avis'), eleveId, type, texte, auteur: SESSION.nom, role: SESSION.role, date: todayISO(), readBy:[] });
+  await saveDB(); closeModal(); toast('Avis publié — visible immédiatement par le parent.'); refresh();
+}
+async function deleteAvis(id){
+  const a = DB.avis.find(x=>x.id===id);
+  if(!canDeleteItem(a)) return toast('Vous ne pouvez supprimer que vos propres avis.','error');
+  if(!confirm('Supprimer cet avis ?')) return;
+  DB.avis = DB.avis.filter(x=>x.id!==id);
+  await saveDB(); toast('Avis supprimé.','warn'); refresh();
+}
+
+/* ---------- CONVOCATIONS ---------- */
+ROUTES.convocations = function(){
+  const rows = DB.convocations.slice().reverse().map(c=>`
+    <tr><td>${fmtDate(c.date)}</td><td>${eleveLabel(c.eleveId)}</td><td>${escapeHtml(c.motif)}</td><td>${escapeHtml(c.lieu||'—')}</td>
+    <td><span class="pill ${c.statut==='En attente'?'pill-gold':'pill-ok'}">${c.statut}</span></td>
+    <td>${c.statut==='En attente'?`<button class="btn btn-outline btn-sm" onclick="marquerConvocTraitee('${c.id}')">Marquer traitée</button>`:''} ${canDeleteItem(c)?`<button class="btn btn-danger btn-sm" onclick="deleteConvoc('${c.id}')">🗑</button>`:''}</td></tr>`).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Vie scolaire</div><h1>Convocations parentales</h1></div>
+    <button class="btn btn-primary" onclick="openAddConvoc()">＋ Convoquer un parent</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Élève</th><th>Motif</th><th>Lieu</th><th>Statut</th><th></th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:30px;">Aucune convocation.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddConvoc(){
+  openModal("Convoquer un parent", `
+    <div class="field"><label>Élève</label><select id="cv-eleve">${DB.eleves.map(e=>`<option value="${e.id}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="field"><label>Motif</label><input id="cv-motif" placeholder="Ex : Comportement, résultats, discipline…"></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Date du rendez-vous</label><input id="cv-date" type="date"></div>
+      <div class="field"><label>Lieu</label><input id="cv-lieu" placeholder="Bureau de la Direction" value="Bureau de la Direction"></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveConvoc()">Envoyer la convocation</button>`);
+}
+async function saveConvoc(){
+  const eleveId=val('cv-eleve'), motif=val('cv-motif'), date=val('cv-date'), lieu=val('cv-lieu');
+  if(!motif||!date) return toast('Veuillez remplir le motif et la date.','error');
+  DB.convocations.push({ id: uid('cv'), eleveId, motif, date, lieu, statut:'En attente', auteur: SESSION.nom, readBy:[] });
+  await saveDB(); closeModal(); toast('Convocation envoyée — notification visible côté parent.'); refresh();
+}
+async function marquerConvocTraitee(id){
+  const c = DB.convocations.find(x=>x.id===id); c.statut='Traitée'; await saveDB(); refresh();
+}
+async function deleteConvoc(id){
+  if(!canDeleteItem(DB.convocations.find(x=>x.id===id))) return toast('Permission refusée.','error');
+  if(!confirm('Supprimer cette convocation ?')) return;
+  DB.convocations = DB.convocations.filter(x=>x.id!==id);
+  await saveDB(); toast('Convocation supprimée.','warn'); refresh();
+}
+
+/* ---------- ÉVÉNEMENTS ---------- */
+ROUTES.evenements = function(){
+  const rows = DB.evenements.slice().reverse().map(ev=>`
+    <div class="card" style="margin-bottom:12px;">
+      <div class="flex" style="justify-content:space-between;"><b>${ev.type==='voyage'?'✈️':'🎉'} ${escapeHtml(ev.titre)}</b><span class="pill pill-gold">${fmtDate(ev.date)}</span></div>
+      <p style="margin:8px 0 0;font-size:13.5px;">${escapeHtml(ev.description)}</p>
+      ${ev.lieu? `<div class="muted" style="margin-top:6px;">📍 ${escapeHtml(ev.lieu)}</div>`:''}
+      ${(SESSION.role==='directeur'||SESSION.role==='bureau')? `<div style="text-align:right;margin-top:8px;"><button class="btn btn-danger btn-sm" onclick="deleteEvent('${ev.id}')">🗑 Supprimer</button></div>`:''}
+    </div>`).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Vie scolaire</div><h1>Fêtes & Voyages d'étude</h1></div>
+    <button class="btn btn-primary" onclick="openAddEvent()">＋ Organiser un événement</button>
+  </div>
+  ${rows || `<div class="empty-state"><div class="ic">🎉</div>Aucun événement planifié.</div>`}`;
+};
+function openAddEvent(){
+  openModal("Organiser un événement", `
+    <div class="field"><label>Titre</label><input id="ev-titre" placeholder="Ex : Fête de fin d'année"></div>
+    <div class="field"><label>Type</label><select id="ev-type"><option value="fete">Fête / Cérémonie</option><option value="voyage">Voyage d'étude</option></select></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Date</label><input id="ev-date" type="date"></div>
+      <div class="field"><label>Lieu</label><input id="ev-lieu"></div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="ev-desc"></textarea></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveEvent()">Publier aux parents</button>`);
+}
+async function saveEvent(){
+  const titre=val('ev-titre'); if(!titre) return toast('Titre requis.','error');
+  DB.evenements.push({ id: uid('ev'), titre, type: val('ev-type'), date: val('ev-date'), lieu: val('ev-lieu'), description: val('ev-desc'), auteur: SESSION.nom });
+  await saveDB(); closeModal(); toast('Événement publié.'); refresh();
+}
+async function deleteEvent(id){
+  if(!canDeleteItem(DB.evenements.find(x=>x.id===id))) return toast('Permission refusée.','error');
+  if(!confirm('Supprimer cet événement ?')) return;
+  DB.evenements = DB.evenements.filter(x=>x.id!==id);
+  await saveDB(); toast('Événement supprimé.','warn'); refresh();
+}
+
+/* ---------- MESSAGERIE INTERNE ---------- */
+ROUTES.messages = function(){
+  // Mark visible messages as read
+  DB.messages.forEach(m=>{
+    if(!m.readBy) m.readBy=[];
+    const visible = m.to==='all' || m.to===SESSION.role || m.fromRole===SESSION.role;
+    if(visible && !m.readBy.includes(SESSION.id)){
+      m.readBy.push(SESSION.id);
+    }
+  });
+  saveSoon();
+  const visibleMsgs = DB.messages.filter(m=>m.to==='all' || m.to===SESSION.role || m.fromRole===SESSION.role);
+  const rows = visibleMsgs.slice().reverse().map(m=>`
+    <div class="card" style="margin-bottom:12px;${!(m.readBy||[]).includes(SESSION.id)?'border-left:3px solid var(--fuchsia);':''}">
+      <div class="flex" style="justify-content:space-between;"><b>${escapeHtml(m.from)}</b><span class="muted">${fmtDate(m.date)}</span></div>
+      <div class="muted" style="margin:2px 0 8px;">À : ${m.to==='all'?'Tout le personnel':roleLabel(m.to)}</div>
+      <p style="font-size:13.5px;margin:0;">${escapeHtml(m.texte)}</p>
+      ${canDeleteItem(m)? `<div style="text-align:right;margin-top:10px;"><button class="btn btn-danger btn-sm" onclick="deleteMessage('${m.id}')">🗑 Supprimer</button></div>` : ''}
+    </div>`).join('');
+  const canSendBroad = SESSION.role==='directeur' || SESSION.role==='bureau';
+  // rebuild nav to clear badge
+  setTimeout(buildNav, 100);
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Communication</div><h1>Messagerie interne</h1></div>
+    ${canSendBroad? `<button class="btn btn-primary" onclick="openSendMessage()">＋ Nouveau message / réunion</button>`:''}
+  </div>
+  ${rows || `<div class="empty-state"><div class="ic">💬</div>Aucun message.</div>`}`;
+};
+function openSendMessage(){
+  openModal("Envoyer un message au personnel", `
+    <div class="field"><label>Destinataires</label><select id="msg-to">
+      <option value="all">Tout le personnel (réunion générale)</option>
+      <option value="bureau">Personnel de bureau</option>
+      <option value="prof">Professeurs</option>
+    </select></div>
+    <div class="field"><label>Message</label><textarea id="msg-texte" placeholder="Ex : Réunion générale vendredi à 14h en salle des professeurs."></textarea></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="sendMessage()">Envoyer</button>`);
+}
+async function sendMessage(){
+  const texte = val('msg-texte'); if(!texte) return toast('Message vide.','error');
+  DB.messages.push({ id: uid('msg'), from: SESSION.nom, fromRole: SESSION.role, to: val('msg-to'), texte, date: todayISO(), readBy:[SESSION.id] });
+  await saveDB(); closeModal(); toast('Message envoyé.'); refresh();
+}
+async function deleteMessage(id){
+  const m = DB.messages.find(x=>x.id===id);
+  if(!canDeleteItem(m)) return toast('Vous ne pouvez supprimer que vos propres messages.','error');
+  if(!confirm('Supprimer ce message ?')) return;
+  DB.messages = DB.messages.filter(x=>x.id!==id);
+  await saveDB(); toast('Message supprimé.','warn'); refresh();
+}
+
+/* ---------- AVIS DES PARENTS (feedback) — vue staff ---------- */
+ROUTES.feedback = function(){
+  const rows = DB.feedback.slice().reverse().map(f=>`
+    <div class="card" style="margin-bottom:12px;">
+      <div class="flex" style="justify-content:space-between;">
+        <b>${'⭐'.repeat(f.note)}${'☆'.repeat(5-f.note)}</b>
+        <span class="pill pill-rose">${f.cible==='prof'?('Professeur : '+(personnelById(f.profId)||{}).nom):f.cible==='direction'?'Direction':'École'}</span>
+      </div>
+      <p style="font-size:13.5px;margin:8px 0 4px;">${escapeHtml(f.texte)}</p>
+      <div class="muted">De la famille de ${eleveLabel(f.eleveId)} — ${fmtDate(f.date)}</div>
+    </div>`).join('');
+  return `<div class="topbar"><div><div class="breadcrumb">Vie scolaire</div><h1>Avis des parents</h1></div></div>
+  ${rows || `<div class="empty-state"><div class="ic">⭐</div>Aucun avis reçu pour le moment.</div>`}`;
+};
+
+/* ---------- FACTURATION & ÉCOLAGE ---------- */
+function getTarif(classe, type){
+  const t = (DB.config.tarifs||{})[classe];
+  if(t && t[type]) return t[type];
+  return type==='inscription'? DB.config.fraisInscription : DB.config.ecolageMensuel;
+}
+ROUTES.factures = function(){
+  // Alertes écolage en retard (impayé > 30 jours)
+  const now = new Date();
+  const enRetard = DB.factures.filter(f=>{
+    if(f.statut==='Payé') return false;
+    const d = new Date(f.date);
+    return (now-d)/(1000*60*60*24) > 30;
+  });
+  const retardAlert = enRetard.length? `
+    <div class="card" style="border-left:4px solid var(--danger);margin-bottom:18px;background:#fff8f9;">
+      <b style="color:var(--danger);">⚠️ Écolage non payé ou en retard — ${enRetard.length} facture(s)</b>
+      <div style="margin-top:8px;font-size:13px;">
+        ${enRetard.slice(0,5).map(f=>`<div>• ${eleveLabel(f.eleveId)} — ${escapeHtml(f.libelle)} ${f.mois!=='-'?'('+f.mois+')':''} — <b>${fmtAr(f.montant)}</b> — depuis ${fmtDate(f.date)}</div>`).join('')}
+        ${enRetard.length>5?`<div class="muted">… et ${enRetard.length-5} autre(s)</div>`:''}
+      </div>
+    </div>` : '';
+  const rows = DB.factures.slice().reverse().map(f=>{
+    const isRetard = f.statut!=='Payé' && (now-new Date(f.date))/(1000*60*60*24)>30;
+    return `<tr style="${isRetard?'background:#fff0f2;':''}">
+      <td>${f.numero}</td><td>${eleveLabel(f.eleveId)}</td><td>${escapeHtml(f.libelle)}</td><td>${f.mois}</td><td>${fmtAr(f.montant)}</td>
+      <td><span class="pill ${f.statut==='Payé'?'pill-ok':isRetard?'pill-danger':'pill-gold'}">${isRetard&&f.statut!=='Payé'?'En retard':f.statut}</span></td>
+      <td>
+        ${f.statut!=='Payé'?`<button class="btn btn-outline btn-sm" onclick="marquerPaye('${f.id}')">Marquer payé</button>`:''}
+        <button class="btn btn-gold btn-sm" onclick="openRecu('${f.id}')">Reçu</button>
+        ${canDeleteItem(f)?`<button class="btn btn-danger btn-sm" onclick="deleteFacture('${f.id}')">🗑</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Administration</div><h1>Facturation & Suivi de l'écolage</h1></div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="navigateTo('tarifs-classes')">⚙️ Tarifs par classe</button>
+      <button class="btn btn-primary" onclick="openAddFacture()">＋ Générer une facture</button>
+      <button class="btn btn-gold btn-sm" onclick="openFactureMultiMois()">📅 Payer plusieurs mois</button>
+    </div>
+  </div>
+  ${retardAlert}
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>N°</th><th>Élève</th><th>Libellé</th><th>Mois</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="7" class="muted" style="text-align:center;padding:30px;">Aucune facture.</td></tr>`}</tbody></table></div></div>`;
+};
+
+function openAddFacture(){
+  openModal("Générer une facture d'écolage", `
+    <div class="field"><label>Élève</label><select id="fac-eleve" onchange="updateFacTarif()">${DB.eleves.map(e=>`<option value="${e.id}" data-classe="${e.classe}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Mois concerné</label><input id="fac-mois" placeholder="Ex : Octobre 2026"></div>
+      <div class="field"><label>Montant (Ar)</label><input id="fac-montant" type="number" value="${DB.config.ecolageMensuel}"></div>
+    </div>
+    <div class="field"><label>Libellé</label><input id="fac-libelle" value="Écolage mensuel"></div>
+    <div class="lock-note" id="fac-tarif-note" style="margin-top:4px;"></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveFacture()">Générer</button>`);
+  setTimeout(updateFacTarif, 100);
+}
+function updateFacTarif(){
+  const sel = document.getElementById('fac-eleve');
+  if(!sel) return;
+  const opt = sel.options[sel.selectedIndex];
+  const classe = opt ? opt.dataset.classe : '';
+  const tarif = getTarif(classe, 'ecolage');
+  const inp = document.getElementById('fac-montant');
+  if(inp) inp.value = tarif;
+  const note = document.getElementById('fac-tarif-note');
+  if(note) note.textContent = classe ? `Tarif écolage pour ${classe} : ${fmtAr(tarif)}` : '';
+}
+
+function openFactureMultiMois(){
+  const moisList = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  openModal("Paiement de plusieurs mois", `
+    <div class="lock-note">Certains parents paient plusieurs mois à l'avance. Cochez les mois à générer.</div>
+    <div class="field"><label>Élève</label><select id="fm-eleve">${DB.eleves.map(e=>`<option value="${e.id}" data-classe="${e.classe}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="field"><label>Année</label><input id="fm-annee" value="2026" style="width:100px;padding:8px;border:1.5px solid var(--line);border-radius:8px;"></div>
+    <div class="field"><label>Mois à générer</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;">
+        ${moisList.map((m,i)=>`<label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="checkbox" class="fm-mois-cb" value="${m}"> ${m}</label>`).join('')}
+      </div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveFactureMultiMois()">Générer les factures</button>`);
+}
+async function saveFactureMultiMois(){
+  const eleveId = val('fm-eleve');
+  const annee = val('fm-annee') || '2026';
+  const checks = document.querySelectorAll('.fm-mois-cb:checked');
+  if(!checks.length) return toast('Sélectionnez au moins un mois.','error');
+  const eleve = eleveById(eleveId);
+  const tarif = getTarif(eleve.classe, 'ecolage');
+  checks.forEach(cb=>{
+    const mois = cb.value+' '+annee;
+    DB.factures.push({ id: uid('fac'), eleveId, type:'ecolage', libelle:'Écolage mensuel', montant: tarif, mois, date: todayISO(), statut:'Payé', numero:'FAC-'+genCode(5), auteur: SESSION.nom });
+  });
+  await saveDB(); closeModal(); toast(`${checks.length} mois enregistré(s) comme payés.`); refresh();
+}
+
+async function saveFacture(){
+  DB.factures.push({ id: uid('fac'), eleveId: val('fac-eleve'), type:'ecolage', libelle: val('fac-libelle'), montant: parseFloat(val('fac-montant'))||0, mois: val('fac-mois')||'-', date: todayISO(), statut:'À payer', numero:'FAC-'+genCode(5), auteur: SESSION.nom });
+  await saveDB(); closeModal(); toast('Facture générée.'); refresh();
+}
+async function marquerPaye(id){ const f=DB.factures.find(x=>x.id===id); f.statut='Payé'; f.datePaiement=todayISO(); await saveDB(); toast('Paiement enregistré.'); refresh(); }
+async function deleteFacture(id){
+  if(!canDeleteItem(DB.factures.find(x=>x.id===id))) return toast('Permission refusée.','error');
+  if(!confirm('Supprimer cette facture ?')) return;
+  DB.factures = DB.factures.filter(x=>x.id!==id);
+  await saveDB(); toast('Facture supprimée.','warn'); refresh();
+}
+
+/* ---------- TARIFS PAR CLASSE ---------- */
+ROUTES['tarifs-classes'] = function(){
+  if(SESSION.role!=='directeur' && SESSION.role!=='bureau') return accessDenied();
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Administration</div><h1>Tarifs par classe</h1></div></div>
+  <div class="lock-note">Définissez un tarif d'inscription et d'écolage mensuel pour chaque classe. Si non défini, le tarif général est utilisé (Inscription: ${fmtAr(DB.config.fraisInscription)}, Écolage: ${fmtAr(DB.config.ecolageMensuel)}).</div>
+  <div class="card">
+    <table><thead><tr><th>Classe</th><th>Droit d'inscription (Ar)</th><th>Écolage mensuel (Ar)</th><th></th></tr></thead>
+    <tbody>
+    ${DB.config.classes.map(c=>{
+      const t = (DB.config.tarifs||{})[c]||{};
+      return `<tr>
+        <td><b>${escapeHtml(c)}</b></td>
+        <td><input type="number" id="ti-ins-${c.replace(/[^a-zA-Z0-9]/g,'_')}" value="${t.inscription||''}" placeholder="${DB.config.fraisInscription}" style="width:150px;padding:7px;border:1.5px solid var(--line);border-radius:8px;"></td>
+        <td><input type="number" id="ti-eco-${c.replace(/[^a-zA-Z0-9]/g,'_')}" value="${t.ecolage||''}" placeholder="${DB.config.ecolageMensuel}" style="width:150px;padding:7px;border:1.5px solid var(--line);border-radius:8px;"></td>
+        <td><button class="btn btn-primary btn-sm" onclick="saveTarifClasse('${escapeHtml(c)}')">Enregistrer</button></td>
+      </tr>`;
+    }).join('')}
+    </tbody></table>
+  </div>`;
+};
+async function saveTarifClasse(classe){
+  const key = classe.replace(/[^a-zA-Z0-9]/g,'_');
+  if(!DB.config.tarifs) DB.config.tarifs={};
+  const ins = parseFloat(document.getElementById('ti-ins-'+key)?.value)||0;
+  const eco = parseFloat(document.getElementById('ti-eco-'+key)?.value)||0;
+  DB.config.tarifs[classe] = { inscription: ins||DB.config.fraisInscription, ecolage: eco||DB.config.ecolageMensuel };
+  await saveDB(); toast(`Tarifs de ${classe} enregistrés.`);
+}
+function openRecu(id){
+  const f = DB.factures.find(x=>x.id===id); const e = eleveById(f.eleveId);
+  const html = `<div id="print-area"><div class="facture-page">
+    <div class="fac-head">
+      <div><div class="bull-crest" style="width:50px;height:50px;font-size:17px;">LP</div></div>
+      <div style="text-align:right;">
+        <h2 style="margin:0;color:var(--rose-deep);font-size:18px;">${escapeHtml(DB.config.schoolName)}</h2>
+        <div class="muted">Reçu N° ${f.numero}</div>
+        <div class="muted">Date : ${fmtDate(f.date)}</div>
+      </div>
+    </div>
+    <p><b>Reçu pour :</b> ${e.prenom} ${e.nom} — Matricule ${e.matricule} — Classe ${e.classe}</p>
+    <table class="fac-table"><thead><tr><th>Désignation</th><th>Période</th><th>Montant</th></tr></thead>
+    <tbody><tr><td>${escapeHtml(f.libelle)}</td><td>${f.mois}</td><td>${fmtAr(f.montant)}</td></tr></tbody></table>
+    <div class="fac-total"><table><tr><td><b>Total</b></td><td style="text-align:right;"><b>${fmtAr(f.montant)}</b></td></tr>
+    <tr><td>Statut</td><td style="text-align:right;">${f.statut}</td></tr></table></div>
+    <div class="signbox" style="justify-content:flex-end;"><div>Signature & cachet — La Direction</div></div>
+  </div></div>`;
+  openModal('Reçu / Facture', html, `<button class="btn btn-outline" onclick="closeModal()">Fermer</button><button class="btn btn-gold" onclick="window.print()">🖨️ Imprimer / PDF</button>`);
+}
+
+/* ---------- FINANCES (direction uniquement) ---------- */
+ROUTES.finances = function(){
+  if(SESSION.role!=='directeur') return accessDenied();
+  const recettes = DB.factures.filter(f=>f.statut==='Payé').reduce((s,f)=>s+f.montant,0);
+  const depenses = DB.finances.depenses.reduce((s,d)=>s+d.montant,0);
+  const rows = DB.finances.depenses.slice().reverse().map(d=>`<tr><td>${fmtDate(d.date)}</td><td>${escapeHtml(d.libelle)}</td><td><span class="pill pill-navy">${escapeHtml(d.categorie)}</span></td><td>${fmtAr(d.montant)}</td></tr>`).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">🔒 Direction uniquement</div><h1>Finances & Bénéfices</h1></div>
+    <button class="btn btn-primary" onclick="openAddDepense()">＋ Enregistrer une dépense</button>
+  </div>
+  <div class="grid cols-3">
+    <div class="card stat-card"><div class="label">Recettes</div><div class="val">${fmtAr(recettes)}</div></div>
+    <div class="card stat-card"><div class="label">Dépenses</div><div class="val">${fmtAr(depenses)}</div></div>
+    <div class="card stat-card"><div class="label">Bénéfice net</div><div class="val" style="color:${(recettes-depenses)>=0?'var(--ok)':'var(--danger)'}">${fmtAr(recettes-depenses)}</div></div>
+  </div>
+  <div class="section-title"><h2>Journal des dépenses</h2><div class="line"></div></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Libellé</th><th>Catégorie</th><th>Montant</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="4" class="muted" style="text-align:center;padding:24px;">Aucune dépense enregistrée.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddDepense(){
+  openModal("Enregistrer une dépense", `
+    <div class="field"><label>Libellé</label><input id="dep-libelle" placeholder="Ex : Fournitures, salaires, électricité…"></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Catégorie</label><select id="dep-cat"><option>Salaires</option><option>Fournitures</option><option>Maintenance</option><option>Électricité/Eau</option><option>Événements</option><option>Autre</option></select></div>
+      <div class="field"><label>Montant (Ar)</label><input id="dep-montant" type="number"></div>
+    </div>
+    <div class="field"><label>Date</label><input id="dep-date" type="date" value="${todayISO()}"></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveDepense()">Enregistrer</button>`);
+}
+async function saveDepense(){
+  DB.finances.depenses.push({ id: uid('dep'), libelle: val('dep-libelle'), categorie: val('dep-cat'), montant: parseFloat(val('dep-montant'))||0, date: val('dep-date') });
+  await saveDB(); closeModal(); toast('Dépense enregistrée.'); refresh();
+}
+
+/* ---------- CONTRATS (direction uniquement) ---------- */
+ROUTES.contrats = function(){
+  if(SESSION.role!=='directeur') return accessDenied();
+  const rows = DB.finances.contrats.slice().reverse().map(c=>`
+    <tr><td>${escapeHtml(c.nom)}</td><td>${escapeHtml(c.poste)}</td><td>${escapeHtml(c.type)}</td><td>${fmtAr(c.salaire)}</td><td>${fmtDate(c.dateDebut)}</td></tr>`).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">🔒 Direction uniquement</div><h1>Contrats du personnel</h1></div>
+    <button class="btn btn-primary" onclick="openAddContrat()">＋ Nouveau contrat</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Nom</th><th>Poste</th><th>Type de contrat</th><th>Salaire</th><th>Début</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="5" class="muted" style="text-align:center;padding:24px;">Aucun contrat enregistré.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddContrat(){
+  openModal("Nouveau contrat", `
+    <div class="field"><label>Nom de l'employé</label><input id="ct-nom"></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Poste</label><input id="ct-poste"></div>
+      <div class="field"><label>Type</label><select id="ct-type"><option>CDI</option><option>CDD</option><option>Vacataire</option></select></div>
+      <div class="field"><label>Salaire (Ar)</label><input id="ct-salaire" type="number"></div>
+      <div class="field"><label>Date de début</label><input id="ct-debut" type="date"></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveContrat()">Enregistrer</button>`);
+}
+async function saveContrat(){
+  DB.finances.contrats.push({ id: uid('ct'), nom: val('ct-nom'), poste: val('ct-poste'), type: val('ct-type'), salaire: parseFloat(val('ct-salaire'))||0, dateDebut: val('ct-debut') });
+  await saveDB(); closeModal(); toast('Contrat enregistré.'); refresh();
+}
+
+/* ---------- SÉCURITÉ (direction uniquement) ---------- */
+ROUTES.securite = function(){
+  if(SESSION.role!=='directeur') return accessDenied();
+  return `
+  <div class="topbar"><div><div class="breadcrumb">🔒 Direction uniquement</div><h1>Sécurité & Codes d'accès</h1></div></div>
+  <div class="lock-note">Seul le Directeur peut générer ou modifier les codes d'accès. Chaque profil (Bureau, Professeur, Parent) possède un code distinct.</div>
+  <div class="grid cols-3">
+    <div class="card">
+      <b>Code Direction</b><hr class="sep">
+      <div class="mono-num" style="font-size:24px;color:var(--rose-deep);">${DB.config.codes.directeur}</div>
+      <button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="regenCode('directeur')">Régénérer</button>
+    </div>
+    <div class="card">
+      <b>Code Bureau</b><hr class="sep">
+      <div class="mono-num" style="font-size:24px;color:var(--rose-deep);">${DB.config.codes.bureau}</div>
+      <button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="regenCode('bureau')">Régénérer</button>
+    </div>
+    <div class="card">
+      <b>Code Professeur</b><hr class="sep">
+      <div class="mono-num" style="font-size:24px;color:var(--rose-deep);">${DB.config.codes.prof}</div>
+      <button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="regenCode('prof')">Régénérer</button>
+    </div>
+  </div>
+  <div class="lock-note" style="margin-top:18px;">ℹ️ Le code « Parent » est unique par élève et généré automatiquement lors de l'inscription (visible via « Élèves & Inscriptions »).</div>
+  `;
+};
+async function regenCode(which){
+  const prefix = {directeur:'DIRECTION', bureau:'BUREAU', prof:'PROF'}[which];
+  DB.config.codes[which] = prefix+'-'+genCode(5);
+  await saveDB(); toast('Nouveau code généré : '+DB.config.codes[which]); refresh();
+}
+function accessDenied(){
+  return `<div class="empty-state"><div class="ic">🔒</div><b>Accès réservé à la Direction.</b><p class="muted">Vous n'avez pas la permission de consulter cette section.</p></div>`;
+}
+
+/* Seul l'auteur (ou directeur) peut supprimer un élément */
+function canDeleteItem(item){
+  if(!item || !SESSION) return false;
+  if(SESSION.role==='directeur') return true;
+  // auteur identifié par nom ET role
+  return item.auteur===SESSION.nom || item.from===SESSION.nom;
+}
+
+/* =================================================================
+   ESPACE PARENT — vues spécifiques
+   ================================================================= */
+ROUTES['p-notes'] = function(){
+  const e = eleveById(SESSION.id);
+  const tabs = ['Trimestre 1','Trimestre 2','Trimestre 3'];
+  window.__currentTri = window.__currentTri || 'Trimestre 1';
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon enfant</div><h1>Notes & Bulletin</h1></div></div>
+  <div class="tabs">${tabs.map(t=>`<button class="tab-btn ${window.__currentTri===t?'active':''}" onclick="setParentTri('${t}')">${t}</button>`).join('')}</div>
+  <div id="parent-notes-body"></div>
+  `;
+};
+function attachParentNotes(){ renderParentNotesBody(); }
+function setParentTri(t){ window.__currentTri=t; navigateTo('p-notes'); }
+function renderParentNotesBody(){
+  const e = eleveById(SESSION.id);
+  const tri = window.__currentTri;
+  const det = matiereDetailEleve(e.id, tri);
+  const moy = moyenneEleve(e.id, tri);
+  const {rangMap,total} = rangsClasse(e.classe, tri);
+  document.getElementById('parent-notes-body').innerHTML = `
+    <div class="grid cols-3" style="margin-bottom:18px;">
+      <div class="card stat-card"><div class="label">Moyenne</div><div class="val">${moy!==null?moy.toFixed(2):'—'}/20</div></div>
+      <div class="card stat-card"><div class="label">Rang</div><div class="val">${rangMap[e.id]?rangMap[e.id]+'ᵉ':'—'} / ${total}</div></div>
+      <div class="card stat-card"><div class="label">Appréciation</div><div class="val" style="font-size:18px;">${appreciationFromMoy(moy)}</div></div>
+    </div>
+    <div class="card">
+      <div class="table-wrap"><table><thead><tr><th>Matière</th><th>Coef.</th><th>Notes</th><th>Moyenne/20</th></tr></thead>
+      <tbody>${det.length? det.map(d=>`<tr><td>${escapeHtml(d.matiere)}</td><td>${d.coef}</td><td>${d.detail}</td><td><b>${d.moyenne.toFixed(2)}</b></td></tr>`).join('') : `<tr><td colspan="4" style="text-align:center;color:#999;padding:24px;">Bulletin vide pour ce trimestre.</td></tr>`}</tbody></table></div>
+      <div style="text-align:right;margin-top:16px;">
+        <button class="btn btn-outline btn-sm" style="margin-right:8px;" onclick="previewBulletin('${e.id}','${tri}')">🔎 Aperçu plein écran</button>
+        <button class="btn btn-gold" onclick="openBulletin('${e.id}','${tri}')">📄 Voir / Imprimer le bulletin complet</button>
+      </div>
+    </div>
+  `;
+}
+
+ROUTES['p-avis'] = function(){
+  const list = DB.avis.filter(a=>a.eleveId===SESSION.id).slice().reverse();
+  return `<div class="topbar"><div><div class="breadcrumb">Mon enfant</div><h1>Avis & Avertissements</h1></div></div>
+  ${list.length? list.map(renderAvisCard).join('') : `<div class="empty-state"><div class="ic">📣</div>Aucun avis pour le moment.</div>`}`;
+};
+ROUTES['p-convocations'] = function(){
+  const list = DB.convocations.filter(c=>c.eleveId===SESSION.id).slice().reverse();
+  return `<div class="topbar"><div><div class="breadcrumb">Mon enfant</div><h1>Convocations parentales</h1></div></div>
+  ${list.length? list.map(c=>`<div class="card" style="margin-bottom:12px;border-left:4px solid ${c.statut==='En attente'?'var(--danger)':'var(--ok)'};">
+    <div class="flex" style="justify-content:space-between;"><b>${escapeHtml(c.motif)}</b><span class="pill ${c.statut==='En attente'?'pill-danger':'pill-ok'}">${c.statut}</span></div>
+    <p class="muted" style="margin:8px 0 0;">📅 ${fmtDate(c.date)} ${c.lieu?('— 📍 '+escapeHtml(c.lieu)):''}</p>
+  </div>`).join('') : `<div class="empty-state"><div class="ic">📨</div>Aucune convocation.</div>`}`;
+};
+ROUTES['p-evenements'] = function(){
+  const rows = DB.evenements.slice().reverse();
+  return `<div class="topbar"><div><div class="breadcrumb">École</div><h1>Fêtes & Voyages d'étude</h1></div></div>
+  ${rows.length? rows.map(ev=>`<div class="card" style="margin-bottom:12px;">
+    <div class="flex" style="justify-content:space-between;"><b>${ev.type==='voyage'?'✈️':'🎉'} ${escapeHtml(ev.titre)}</b><span class="pill pill-gold">${fmtDate(ev.date)}</span></div>
+    <p style="margin:8px 0 0;font-size:13.5px;">${escapeHtml(ev.description)}</p>${ev.lieu?`<div class="muted" style="margin-top:6px;">📍 ${escapeHtml(ev.lieu)}</div>`:''}</div>`).join('') : `<div class="empty-state"><div class="ic">🎉</div>Aucun événement prévu.</div>`}`;
+};
+ROUTES['p-messages'] = function(){
+  const rows = DB.messages.filter(m=>m.to==='all').slice().reverse();
+  // mark as read
+  rows.forEach(m=>{ if(!m.readBy) m.readBy=[]; if(!m.readBy.includes(SESSION.id)) m.readBy.push(SESSION.id); });
+  saveSoon();
+  setTimeout(buildNav, 100);
+  return `<div class="topbar"><div><div class="breadcrumb">École</div><h1>Messages de la Direction</h1></div></div>
+  ${rows.length? rows.map(m=>`<div class="card" style="margin-bottom:12px;"><div class="flex" style="justify-content:space-between;"><b>${escapeHtml(m.from)}</b><span class="muted">${fmtDate(m.date)}</span></div><p style="margin-top:8px;font-size:13.5px;">${escapeHtml(m.texte)}</p></div>`).join('') : `<div class="empty-state"><div class="ic">💬</div>Aucun message.</div>`}`;
+};
+ROUTES['p-feedback'] = function(){
+  const profsOfClass = DB.personnel.filter(p=>p.role==='prof' && (p.assignations||[]).some(a=>a.classe===eleveById(SESSION.id).classe));
+  return `<div class="topbar"><div><div class="breadcrumb">École</div><h1>Donner mon avis</h1></div></div>
+  <div class="card">
+    <div class="field"><label>Concernant</label><select id="fb-cible" onchange="document.getElementById('fb-prof-wrap').style.display=this.value==='prof'?'block':'none'">
+      <option value="ecole">L'école en général</option>
+      <option value="direction">La Direction</option>
+      <option value="prof">Un professeur</option>
+    </select></div>
+    <div class="field" id="fb-prof-wrap" style="display:none;"><label>Professeur</label><select id="fb-prof">${profsOfClass.map(p=>`<option value="${p.id}">${escapeHtml(p.nom)}</option>`).join('')}</select></div>
+    <div class="field"><label>Note</label><select id="fb-note"><option value="5">⭐⭐⭐⭐⭐ Excellent</option><option value="4">⭐⭐⭐⭐ Très bien</option><option value="3">⭐⭐⭐ Bien</option><option value="2">⭐⭐ Moyen</option><option value="1">⭐ Insuffisant</option></select></div>
+    <div class="field"><label>Votre message</label><textarea id="fb-texte"></textarea></div>
+    <button class="btn btn-primary" onclick="sendFeedback()">Envoyer mon avis</button>
+  </div>`;
+};
+async function sendFeedback(){
+  const texte = val('fb-texte'); if(!texte) return toast('Message vide.','error');
+  DB.feedback.push({ id: uid('fb'), eleveId: SESSION.id, cible: val('fb-cible'), profId: val('fb-prof')||null, note: parseInt(val('fb-note')), texte, date: todayISO() });
+  await saveDB(); toast('Merci, votre avis a été transmis.'); document.getElementById('fb-texte').value='';
+}
+ROUTES['p-factures'] = function(){
+  const rows = DB.factures.filter(f=>f.eleveId===SESSION.id).slice().reverse();
+  const now = new Date();
+  const enRetard = rows.filter(f=>f.statut!=='Payé' && (now-new Date(f.date))/(1000*60*60*24)>30);
+  const retardAlert = enRetard.length? `<div class="card" style="border-left:4px solid var(--danger);margin-bottom:14px;background:#fff8f9;"><b style="color:var(--danger);">⚠️ Écolage non payé ou en retard — ${enRetard.length} facture(s) impayée(s). Veuillez régulariser auprès du bureau.</b></div>` : '';
+  return `<div class="topbar"><div><div class="breadcrumb">École</div><h1>Écolage & Reçus</h1></div></div>
+  ${retardAlert}
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>N°</th><th>Libellé</th><th>Mois</th><th>Montant</th><th>Statut</th><th></th></tr></thead>
+  <tbody>${rows.length? rows.map(f=>{
+    const isRetard = f.statut!=='Payé' && (now-new Date(f.date))/(1000*60*60*24)>30;
+    return `<tr${isRetard?' style="background:#fff0f2;"':''}><td>${f.numero}</td><td>${escapeHtml(f.libelle)}</td><td>${f.mois}</td><td>${fmtAr(f.montant)}</td><td><span class="pill ${f.statut==='Payé'?'pill-ok':isRetard?'pill-danger':'pill-gold'}">${isRetard&&f.statut!=='Payé'?'⚠️ En retard':f.statut}</span></td><td><button class="btn btn-outline btn-sm" onclick="openRecu('${f.id}')">Voir reçu</button></td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucune facture.</td></tr>`}</tbody></table></div></div>`;
+};
+
+/* ---------- hook post-render pour routes spéciales ---------- */
+function attachRouteEvents(route){
+  if(route==='notes') attachNotesRoute();
+  if(route==='p-notes') attachParentNotes();
+  if(route==='emploi-du-temps') setTimeout(renderEDT, 120);
+  if(route==='rapports') setTimeout(renderRapport, 120);
+  if(route==='mes-notes'){ /* rien d'auto */ }
+}
+
+/* =================================================================
+   APPEL & PRÉSENCES
+   ================================================================= */
+ROUTES.presences = function(){
+  const entries = DB.presences.slice().reverse().slice(0,30);
+  const rows = entries.map(p=>{
+    const present = (p.appel||[]).filter(a=>a.present).length;
+    const absent = (p.appel||[]).filter(a=>!a.present).length;
+    return `<tr>
+      <td>${fmtDate(p.date)}</td>
+      <td><span class="pill pill-rose">${escapeHtml(p.classe)}</span></td>
+      <td>${escapeHtml(p.auteur||'—')}</td>
+      <td><span class="pill pill-ok">${present} présents</span></td>
+      <td><span class="pill pill-danger">${absent} absents</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="viewPresence('${p.id}')">Détail</button></td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Présence & Absences</div><h1>Historique des appels</h1></div></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Classe</th><th>Auteur</th><th>Présents</th><th>Absents</th><th></th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucun appel enregistré.</td></tr>`}</tbody></table></div></div>`;
+};
+function viewPresence(id){
+  const p = DB.presences.find(x=>x.id===id);
+  if(!p) return;
+  openModal(`Appel — ${p.classe} — ${fmtDate(p.date)}`, `
+    <div class="table-wrap"><table><thead><tr><th>Élève</th><th>Statut</th></tr></thead>
+    <tbody>${(p.appel||[]).map(a=>{const e=eleveById(a.eleveId); return `<tr><td>${e?e.prenom+' '+e.nom:'?'}</td><td><span class="pill ${a.present?'pill-ok':'pill-danger'}">${a.present?'✅ Présent':'🔴 Absent'}</span></td></tr>`;}).join('')}</tbody></table></div>
+  `, `<button class="btn btn-primary" onclick="closeModal()">Fermer</button>`);
+}
+
+ROUTES.absences = function(){
+  const abs = DB.absences.slice().reverse();
+  const rows = abs.map(a=>`
+    <tr>
+      <td>${fmtDate(a.date)}</td>
+      <td>${eleveLabel(a.eleveId)}</td>
+      <td>${escapeHtml(a.motif||'—')}</td>
+      <td><span class="pill ${a.justifie?'pill-ok':'pill-danger'}">${a.justifie?'Justifiée':'Non justifiée'}</span></td>
+      <td>${escapeHtml(a.justification||'—')}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="toggleJustifAbsence('${a.id}')">${a.justifie?'Annuler justification':'Justifier'}</button>
+          ${SESSION.role==='directeur'||SESSION.role==='bureau'?`<button class="btn btn-danger btn-sm" onclick="deleteAbsence('${a.id}')">🗑</button>`:''}
+      </td>
+    </tr>`).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Présence & Absences</div><h1>Absences</h1></div>
+    <button class="btn btn-primary" onclick="openAddAbsence()">＋ Signaler une absence</button>
+  </div>
+  <div class="grid cols-3" style="margin-bottom:18px;">
+    <div class="card stat-card"><div class="label">Total absences</div><div class="val">${abs.length}</div></div>
+    <div class="card stat-card"><div class="label">Non justifiées</div><div class="val" style="color:var(--danger);">${abs.filter(a=>!a.justifie).length}</div></div>
+    <div class="card stat-card"><div class="label">Justifiées</div><div class="val" style="color:var(--ok);">${abs.filter(a=>a.justifie).length}</div></div>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Élève</th><th>Motif</th><th>Statut</th><th>Justification</th><th>Actions</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucune absence enregistrée.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddAbsence(){
+  const list = SESSION.role==='prof'? assignedElevesForProf(SESSION.id) : DB.eleves;
+  openModal("Signaler une absence", `
+    <div class="field"><label>Élève</label><select id="abs-eleve">${list.map(e=>`<option value="${e.id}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Date</label><input id="abs-date" type="date" value="${todayISO()}"></div>
+      <div class="field"><label>Motif</label><input id="abs-motif" placeholder="Ex : Maladie, famille…"></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveAbsence()">Enregistrer</button>`);
+}
+async function saveAbsence(){
+  DB.absences.push({id:uid('abs'),eleveId:val('abs-eleve'),date:val('abs-date')||todayISO(),motif:val('abs-motif'),justifie:false,justification:'',auteur:SESSION.nom});
+  await saveDB(); closeModal(); toast('Absence enregistrée.'); refresh();
+}
+async function toggleJustifAbsence(id){
+  const a = DB.absences.find(x=>x.id===id);
+  if(!a.justifie){
+    const just = prompt('Justification :'); if(just===null) return;
+    a.justifie=true; a.justification=just;
+  } else { a.justifie=false; a.justification=''; }
+  await saveDB(); refresh();
+}
+async function deleteAbsence(id){ if(!confirm('Supprimer ?')) return; DB.absences=DB.absences.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+/* ---------- APPEL (prof) ---------- */
+ROUTES.appel = function(){
+  const p = personnelById(SESSION.id);
+  const assign = p?.assignations||[];
+  const classes = [...new Set(assign.map(a=>a.classe))];
+  window.__appelClasse = window.__appelClasse || classes[0];
+  const appelClasse = window.__appelClasse || '';
+  const els = appelClasse? elevesOfClass(appelClasse) : [];
+  const today = todayISO();
+  const existingAppel = DB.presences.find(pr=>pr.classe===appelClasse && pr.date===today);
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Présences</div><h1>Faire l'appel</h1></div></div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="flex gap10">
+      <div class="field" style="margin:0;"><label style="display:block;margin-bottom:4px;font-size:11px;font-weight:600;text-transform:uppercase;">Classe</label>
+        <select id="appel-classe-sel" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;" onchange="window.__appelClasse=this.value;refresh();">
+          ${classes.map(c=>`<option ${c===appelClasse?'selected':''}>${escapeHtml(c)}</option>`).join('')}
+        </select>
+      </div>
+      <div style="align-self:flex-end;"><span class="pill pill-gold">📅 ${today}</span></div>
+    </div>
+  </div>
+  ${existingAppel? `<div class="lock-note">✅ L'appel a déjà été fait pour cette classe aujourd'hui. <button class="btn btn-outline btn-sm" onclick="deletePresence('${existingAppel.id}')">Refaire l'appel</button></div>` : ''}
+  <div class="card">
+    ${els.length? `
+      <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+        <b>${els.length} élève(s) dans la classe</b>
+        <div><button class="btn btn-outline btn-sm" onclick="setAllPresent(true)">✅ Tous présents</button> <button class="btn btn-outline btn-sm" onclick="setAllPresent(false)">🔴 Tous absents</button></div>
+      </div>
+      <div id="appel-list">
+        ${els.map(e=>{
+          const estPresent = existingAppel? (existingAppel.appel||[]).find(a=>a.eleveId===e.id)?.present!==false : true;
+          return `<div class="presence-row">
+            <div class="avatar" style="width:34px;height:34px;">${e.photo?`<img src="${e.photo}">`:(e.prenom||'?').slice(0,1)}</div>
+            <span style="flex:1;font-size:14px;font-weight:500;">${e.prenom} ${e.nom}</span>
+            <button class="pres-btn ${estPresent?'pres':'neutral'}" id="pres-${e.id}" onclick="togglePresence('${e.id}')">✅ Présent</button>
+            <button class="pres-btn ${!estPresent?'abs':'neutral'}" id="abs-${e.id}" onclick="toggleAbsence('${e.id}')">🔴 Absent</button>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:18px;text-align:right;">
+        <button class="btn btn-primary" onclick="saveAppel('${appelClasse}')">💾 Enregistrer l'appel</button>
+      </div>
+    ` : `<div class="empty-state"><div class="ic">📭</div>Aucun élève dans cette classe.</div>`}
+  </div>`;
+};
+const _appelState = {};
+function togglePresence(eleveId){ _appelState[eleveId]=true; document.getElementById('pres-'+eleveId).className='pres-btn pres'; document.getElementById('abs-'+eleveId).className='pres-btn neutral'; }
+function toggleAbsence(eleveId){ _appelState[eleveId]=false; document.getElementById('pres-'+eleveId).className='pres-btn neutral'; document.getElementById('abs-'+eleveId).className='pres-btn abs'; }
+function setAllPresent(val){ document.querySelectorAll('.presence-row').forEach(row=>{ const id=row.querySelector('[id^="pres-"]')?.id.replace('pres-',''); if(id) val?togglePresence(id):toggleAbsence(id); }); }
+async function saveAppel(classe){
+  const els = elevesOfClass(classe);
+  const appel = els.map(e=>({ eleveId:e.id, present: _appelState[e.id]!==false }));
+  const today = todayISO();
+  // Supprimer ancien appel du même jour même classe
+  DB.presences = DB.presences.filter(p=>!(p.classe===classe && p.date===today));
+  DB.presences.push({id:uid('pres'),classe,date:today,auteur:SESSION.nom,appel});
+  // Créer absences auto
+  appel.filter(a=>!a.present).forEach(a=>{
+    if(!DB.absences.find(x=>x.eleveId===a.eleveId && x.date===today)){
+      DB.absences.push({id:uid('abs'),eleveId:a.eleveId,date:today,motif:'Appel classe',justifie:false,justification:'',auteur:SESSION.nom});
+    }
+  });
+  await saveDB(); toast(`Appel enregistré pour ${classe} — ${appel.filter(a=>!a.present).length} absent(s).`); refresh();
+}
+async function deletePresence(id){ DB.presences=DB.presences.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+/* =================================================================
+   EXAMENS
+   ================================================================= */
+ROUTES.examens = function(){
+  const exams = DB.examens.slice().reverse();
+  const rows = exams.map(ex=>`
+    <tr>
+      <td><b>${escapeHtml(ex.titre)}</b></td>
+      <td><span class="pill pill-rose">${escapeHtml(ex.classe)}</span></td>
+      <td>${escapeHtml(ex.matiere)}</td>
+      <td>${fmtDate(ex.date)}</td>
+      <td>${ex.duree||'—'}</td>
+      <td>${ex.baremeTotal||20}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="openResultatsExamen('${ex.id}')">📊 Résultats</button>
+        ${canDeleteItem(ex)?`<button class="btn btn-danger btn-sm" onclick="deleteExamen('${ex.id}')">🗑</button>`:''}
+      </td>
+    </tr>`).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Pédagogie</div><h1>Examens</h1></div>
+    <button class="btn btn-primary" onclick="openAddExamen()">＋ Créer un examen</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Titre</th><th>Classe</th><th>Matière</th><th>Date</th><th>Durée</th><th>Barème</th><th>Actions</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="7" class="muted" style="text-align:center;padding:24px;">Aucun examen créé.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddExamen(){
+  openModal("Créer un examen", `
+    <div class="field"><label>Titre de l'examen</label><input id="ex-titre" placeholder="Ex : Contrôle de Maths — Trimestre 2"></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Classe</label><select id="ex-classe">${classOptions()}</select></div>
+      <div class="field"><label>Matière</label><select id="ex-matiere">${matiereOptions()}</select></div>
+      <div class="field"><label>Date</label><input id="ex-date" type="date" value="${todayISO()}"></div>
+      <div class="field"><label>Durée (ex : 2h)</label><input id="ex-duree" placeholder="1h30"></div>
+      <div class="field"><label>Barème total</label><input id="ex-bareme" type="number" value="20"></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveExamen()">Créer l'examen</button>`);
+}
+async function saveExamen(){
+  const titre=val('ex-titre'); if(!titre) return toast('Titre requis.','error');
+  DB.examens.push({id:uid('ex'),titre,classe:val('ex-classe'),matiere:val('ex-matiere'),date:val('ex-date')||todayISO(),duree:val('ex-duree'),baremeTotal:parseFloat(val('ex-bareme'))||20,auteur:SESSION.nom});
+  await saveDB(); closeModal(); toast('Examen créé.'); refresh();
+}
+async function deleteExamen(id){ if(!confirm('Supprimer cet examen ?')) return; DB.examens=DB.examens.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+function openResultatsExamen(exId){
+  const ex = DB.examens.find(x=>x.id===exId); if(!ex) return;
+  const els = elevesOfClass(ex.classe);
+  const resMap = {};
+  DB.resultatsExamens.filter(r=>r.examenId===exId).forEach(r=>resMap[r.eleveId]=r);
+  openModal(`Résultats — ${ex.titre}`, `
+    <div class="lock-note">Saisissez les notes sur ${ex.baremeTotal} points.</div>
+    <div class="table-wrap"><table><thead><tr><th>Élève</th><th>Note / ${ex.baremeTotal}</th><th>Observations</th></tr></thead>
+    <tbody>
+      ${els.map(e=>`<tr>
+        <td>${e.prenom} ${e.nom}</td>
+        <td><input type="number" class="note-input" data-eleve="${e.id}" max="${ex.baremeTotal}" min="0" step="0.25" value="${resMap[e.id]?resMap[e.id].note:''}"></td>
+        <td><input type="text" class="res-obs" data-eleve="${e.id}" value="${resMap[e.id]?resMap[e.id].observations||'':''}" style="width:100%;padding:5px 8px;border:1.5px solid var(--line);border-radius:7px;font-size:12px;"></td>
+      </tr>`).join('')}
+    </tbody></table></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Fermer</button><button class="btn btn-primary" onclick="saveResultatsExamen('${exId}')">💾 Enregistrer les résultats</button>`);
+}
+async function saveResultatsExamen(exId){
+  document.querySelectorAll('.note-input').forEach(inp=>{
+    const eleveId=inp.dataset.eleve; if(!eleveId) return;
+    const v=inp.value; if(v===''||v===null) return;
+    const obsEl = document.querySelector(`.res-obs[data-eleve="${eleveId}"]`);
+    const obs = obsEl?obsEl.value:'';
+    let r = DB.resultatsExamens.find(x=>x.examenId===exId && x.eleveId===eleveId);
+    if(r){ r.note=parseFloat(v); r.observations=obs; }
+    else { DB.resultatsExamens.push({id:uid('rex'),examenId:exId,eleveId,note:parseFloat(v),observations:obs}); }
+  });
+  await saveDB(); closeModal(); toast('Résultats enregistrés.');
+}
+
+/* =================================================================
+   HISTORIQUE SCOLAIRE
+   ================================================================= */
+ROUTES['historique-scolaire'] = function(){
+  const rows = DB.historiqueEleve.slice().reverse().map(h=>{
+    const e = eleveById(h.eleveId);
+    return `<tr>
+      <td>${e? escapeHtml(e.prenom+' '+e.nom):h.eleveId}</td>
+      <td>${escapeHtml(h.anneeScolaire)}</td>
+      <td><span class="pill pill-rose">${escapeHtml(h.classe)}</span></td>
+      <td><span class="pill ${h.decision==='Admis'?'pill-ok':h.decision==='Redoublant'?'pill-gold':'pill-danger'}">${escapeHtml(h.decision)}</span></td>
+      <td>${escapeHtml(h.observations||'—')}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteHistorique('${h.id}')">🗑</button></td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Pédagogie</div><h1>Historique scolaire</h1></div>
+    <button class="btn btn-primary" onclick="openAddHistorique()">＋ Ajouter une entrée</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Élève</th><th>Année scolaire</th><th>Classe</th><th>Décision</th><th>Observations</th><th></th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucun historique enregistré.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddHistorique(){
+  openModal("Ajouter un historique scolaire", `
+    <div class="field"><label>Élève</label><select id="hist-eleve">${DB.eleves.map(e=>`<option value="${e.id}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Année scolaire</label><input id="hist-annee" value="${DB.config.anneeScolaire}"></div>
+      <div class="field"><label>Classe fréquentée</label><select id="hist-classe">${classOptions()}</select></div>
+    </div>
+    <div class="field"><label>Décision</label><select id="hist-decision"><option>Admis</option><option>Redoublant</option><option>Orienté</option><option>Retiré</option></select></div>
+    <div class="field"><label>Observations</label><textarea id="hist-obs" placeholder="Appréciations, mentions particulières…"></textarea></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveHistorique()">Enregistrer</button>`);
+}
+async function saveHistorique(){
+  const eleveId=val('hist-eleve'); if(!eleveId) return toast('Sélectionnez un élève.','error');
+  DB.historiqueEleve.push({ id:uid('hist'), eleveId, anneeScolaire:val('hist-annee'), classe:val('hist-classe'), decision:val('hist-decision'), observations:val('hist-obs'), date:todayISO() });
+  await saveDB(); closeModal(); toast('Historique enregistré.'); refresh();
+}
+async function deleteHistorique(id){ if(!confirm('Supprimer ?')) return; DB.historiqueEleve=DB.historiqueEleve.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+/* =================================================================
+   EMPLOI DU TEMPS
+   ================================================================= */
+ROUTES['emploi-du-temps'] = function(){
+  const jours=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const heures=['07:00-08:00','08:00-09:00','09:00-10:00','10:00-11:00','11:00-12:00','14:00-15:00','15:00-16:00','16:00-17:00'];
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Pédagogie</div><h1>Emploi du temps</h1></div>
+    <button class="btn btn-primary" onclick="openAddCours()">＋ Ajouter un cours</button>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="flex gap10">
+      <div class="field" style="margin:0;"><label style="display:block;margin-bottom:4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Classe</label>
+        <select id="edt-classe-filter" onchange="renderEDT()" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;">${classOptions()}</select>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="overflow-x:auto;"><div id="edt-container"></div></div>
+  <script>setTimeout(renderEDT,100);<\/script>`;
+};
+function renderEDT(){
+  const classe = document.getElementById('edt-classe-filter')?.value || DB.config.classes[0];
+  const jours=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const heures=['07:00','08:00','09:00','10:00','11:00','14:00','15:00','16:00'];
+  const labels=['07h-08h','08h-09h','09h-10h','10h-11h','11h-12h','14h-15h','15h-16h','16h-17h'];
+  const container = document.getElementById('edt-container');
+  if(!container) return;
+  let html = `<div style="display:flex;justify-content:flex-end;margin-bottom:10px;gap:8px;">
+    <button class="btn btn-outline btn-sm" onclick="openAddCours()">＋ Ajouter un créneau</button>
+  </div>
+  <div class="edt-grid">
+    <div class="edt-head">Heure</div>
+    ${jours.map(j=>`<div class="edt-head">${j}</div>`).join('')}
+    ${heures.map((h,hi)=>`
+      <div class="edt-time">${labels[hi]}</div>
+      ${jours.map(j=>{
+        const cours = DB.emploiDuTemps.find(c=>c.classe===classe && c.jour===j && c.heureDebut===h);
+        if(cours){
+          const prof = DB.personnel.find(p=>p.id===cours.profId);
+          return `<div class="edt-cell filled">
+            <div class="edt-mat">${escapeHtml(cours.matiere)}</div>
+            <div class="edt-prof">${prof?escapeHtml(prof.nom):'—'}</div>
+            ${cours.salle?`<div class="edt-salle">📍 ${escapeHtml(cours.salle)}</div>`:''}
+            <div style="margin-top:4px;"><span style="cursor:pointer;color:var(--danger);font-size:10px;" onclick="deleteCours('${cours.id}')">✕ Supprimer</span></div>
+          </div>`;
+        }
+        return `<div class="edt-cell" style="cursor:pointer;" onclick="openAddCours('${classe}','${j}','${h}')"><div style="color:var(--line);font-size:11px;text-align:center;padding-top:8px;">＋</div></div>`;
+      }).join('')}
+    `).join('')}
+  </div>`;
+  container.innerHTML = html;
+}
+function openAddCours(classePreset, jourPreset, heurePreset){
+  const jours=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const heures=['07:00','08:00','09:00','10:00','11:00','14:00','15:00','16:00'];
+  const profs = DB.personnel.filter(p=>p.role==='prof');
+  openModal("Ajouter un cours à l'emploi du temps", `
+    <div class="grid cols-2">
+      <div class="field"><label>Classe</label><select id="edt-classe">${classOptions(classePreset||'')}</select></div>
+      <div class="field"><label>Jour</label><select id="edt-jour">${jours.map(j=>`<option ${j===jourPreset?'selected':''}>${j}</option>`).join('')}</select></div>
+      <div class="field"><label>Heure de début</label><select id="edt-hdeb">${heures.map(h=>`<option ${h===heurePreset?'selected':''}>${h}</option>`).join('')}</select></div>
+      <div class="field"><label>Durée</label><select id="edt-duree"><option value="1h">1 heure</option><option value="2h">2 heures</option></select></div>
+    </div>
+    <div class="field"><label>Matière</label><select id="edt-matiere">${matiereOptions()}</select></div>
+    <div class="field"><label>Professeur</label><select id="edt-prof"><option value="">— Sélectionner —</option>${profs.map(p=>`<option value="${p.id}">${escapeHtml(p.nom)}</option>`).join('')}</select></div>
+    <div class="field"><label>Salle (optionnel)</label><input id="edt-salle" placeholder="Ex : Salle A, Terrain…"></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveCours()">Enregistrer</button>`);
+}
+async function saveCours(){
+  DB.emploiDuTemps.push({ id:uid('edt'), classe:val('edt-classe'), jour:val('edt-jour'), heureDebut:val('edt-hdeb'), matiere:val('edt-matiere'), profId:val('edt-prof')||null, salle:val('edt-salle'), date:todayISO() });
+  await saveDB(); closeModal(); toast('Cours ajouté.'); refresh();
+}
+async function deleteCours(id){ DB.emploiDuTemps=DB.emploiDuTemps.filter(x=>x.id!==id); await saveDB(); renderEDT(); }
+
+ROUTES['mon-emploi-du-temps'] = function(){
+  const p = personnelById(SESSION.id);
+  const assign = p?.assignations||[];
+  const classes = [...new Set(assign.map(a=>a.classe))];
+  const mesCours = DB.emploiDuTemps.filter(c=>c.profId===SESSION.id || classes.includes(c.classe));
+  const jours=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const rows = jours.map(j=>{
+    const coursJour = mesCours.filter(c=>c.jour===j).sort((a,b)=>a.heureDebut.localeCompare(b.heureDebut));
+    return coursJour.length? coursJour.map(c=>`<div class="edt-cell filled" style="margin-bottom:6px;">
+      <div class="edt-mat">${escapeHtml(c.matiere)} — ${escapeHtml(c.classe)}</div>
+      <div class="edt-prof">⏰ ${c.heureDebut}${c.salle?' — 📍 '+escapeHtml(c.salle):''}</div>
+    </div>`).join('') : `<div style="color:var(--line);font-size:12px;padding:8px 0;">Pas de cours</div>`;
+  });
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon espace</div><h1>Mon emploi du temps</h1></div></div>
+  <div class="grid cols-5" style="gap:10px;">
+    ${jours.map((j,i)=>`<div class="card" style="padding:14px;">
+      <b style="font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--rose-deep);">${j}</b>
+      <hr class="sep">
+      ${rows[i]}
+    </div>`).join('')}
+  </div>`;
+};
+
+/* =================================================================
+   JOURNAL DE CLASSE (PROFESSEUR)
+   ================================================================= */
+ROUTES['journal-prof'] = function(){
+  const p = personnelById(SESSION.id);
+  const assign = p?.assignations||[];
+  const mesEntrees = DB.journalProf.filter(j=>j.profId===SESSION.id).slice().reverse();
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon espace</div><h1>Journal de classe</h1></div>
+    <button class="btn btn-primary" onclick="openAddJournal()">＋ Nouvelle entrée</button>
+  </div>
+  <div class="lock-note">📔 Enregistrez ici votre programme du jour, le contenu enseigné, les observations sur la classe.</div>
+  ${mesEntrees.length? mesEntrees.map(j=>{
+    const cl = j.classe||'—'; const mat = j.matiere||'—';
+    return `<div class="journal-entry">
+      <div class="je-head">
+        <span class="je-title">📅 ${fmtDate(j.date)} — ${escapeHtml(cl)} · ${escapeHtml(mat)}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteJournal('${j.id}')">🗑</button>
+      </div>
+      <div class="je-prog"><b>Programme :</b> ${escapeHtml(j.programme)}</div>
+      ${j.observations?`<div class="je-obs">Observations : ${escapeHtml(j.observations)}</div>`:''}
+      <div class="muted" style="margin-top:6px;font-size:11px;">Signé le ${j.signeDate||j.date}</div>
+    </div>`;
+  }).join('') : `<div class="empty-state"><div class="ic">📔</div>Aucune entrée dans votre journal pour le moment.</div>`}`;
+};
+function openAddJournal(){
+  const p = personnelById(SESSION.id);
+  const assign = p?.assignations||[];
+  openModal("Nouvelle entrée du journal", `
+    <div class="grid cols-2">
+      <div class="field"><label>Date</label><input id="jnl-date" type="date" value="${todayISO()}"></div>
+      <div class="field"><label>Classe</label><select id="jnl-classe">${[...new Set(assign.map(a=>a.classe))].map(c=>`<option>${escapeHtml(c)}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Matière</label><select id="jnl-matiere">${[...new Set(assign.map(a=>a.matiere))].map(m=>`<option>${escapeHtml(m)}</option>`).join('')}</select></div>
+    <div class="field"><label>Programme enseigné aujourd'hui</label><textarea id="jnl-prog" placeholder="Ex : Chapitre 3 — Les fractions, exercices p.42-44…" style="min-height:90px;"></textarea></div>
+    <div class="field"><label>Observations sur la classe (facultatif)</label><textarea id="jnl-obs" placeholder="Ex : Bonne participation, 3 absents, exercices à corriger…"></textarea></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveJournal()">Signer & Enregistrer</button>`);
+}
+async function saveJournal(){
+  const prog = val('jnl-prog'); if(!prog) return toast('Le programme est requis.','error');
+  DB.journalProf.push({ id:uid('jnl'), profId:SESSION.id, profNom:SESSION.nom, classe:val('jnl-classe'), matiere:val('jnl-matiere'), date:val('jnl-date')||todayISO(), programme:prog, observations:val('jnl-obs'), signeDate:todayISO() });
+  await saveDB(); closeModal(); toast('Entrée de journal enregistrée et signée.'); refresh();
+}
+async function deleteJournal(id){ if(!confirm('Supprimer cette entrée ?')) return; DB.journalProf=DB.journalProf.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+/* =================================================================
+   CANTINE
+   ================================================================= */
+ROUTES.cantine = function(){
+  const rows = DB.eleves.map(e=>{
+    const abonnement = DB.cantineEleves.find(c=>c.eleveId===e.id);
+    return `<tr>
+      <td>${escapeHtml(e.prenom)} ${escapeHtml(e.nom)}</td>
+      <td><span class="pill pill-rose">${escapeHtml(e.classe)}</span></td>
+      <td><span class="pill ${abonnement?.abonne?'pill-ok':'pill-navy'}">${abonnement?.abonne?'Abonné':'Non abonné'}</span></td>
+      <td>${abonnement?.abonne? fmtAr(abonnement.prixMois||0)+'/mois' : '—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="editCantine('${e.id}')">Modifier</button>
+      ${abonnement?.abonne?`<button class="btn btn-gold btn-sm" onclick="facturerCantine('${e.id}')">Facturer</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  const nbAbonnes = DB.cantineEleves.filter(c=>c.abonne).length;
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Services</div><h1>Cantine scolaire</h1></div></div>
+  <div class="grid cols-3" style="margin-bottom:18px;">
+    <div class="card stat-card"><div class="ic-bg">🍽️</div><div class="label">Élèves abonnés</div><div class="val">${nbAbonnes}</div></div>
+    <div class="card stat-card"><div class="ic-bg">👤</div><div class="label">Non abonnés</div><div class="val">${DB.eleves.length-nbAbonnes}</div></div>
+    <div class="card stat-card"><div class="ic-bg">💰</div><div class="label">Revenus mensuels estimés</div><div class="val">${fmtAr(DB.cantineEleves.filter(c=>c.abonne).reduce((s,c)=>s+(c.prixMois||0),0))}</div></div>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Élève</th><th>Classe</th><th>Statut</th><th>Tarif</th><th>Actions</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="5" class="muted" style="text-align:center;padding:24px;">Aucun élève.</td></tr>`}</tbody></table></div></div>`;
+};
+function editCantine(eleveId){
+  const ab = DB.cantineEleves.find(c=>c.eleveId===eleveId)||{};
+  const e = eleveById(eleveId);
+  openModal(`Cantine — ${e.prenom} ${e.nom}`, `
+    <div class="field"><label>Statut</label><select id="cant-ab"><option value="1" ${ab.abonne?'selected':''}>Abonné</option><option value="0" ${!ab.abonne?'selected':''}>Non abonné</option></select></div>
+    <div class="field"><label>Prix mensuel (Ar)</label><input id="cant-prix" type="number" value="${ab.prixMois||30000}"></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveCantine('${eleveId}')">Enregistrer</button>`);
+}
+async function saveCantine(eleveId){
+  let ab = DB.cantineEleves.find(c=>c.eleveId===eleveId);
+  const abonne = document.getElementById('cant-ab').value==='1';
+  const prix = parseFloat(val('cant-prix'))||0;
+  if(ab){ ab.abonne=abonne; ab.prixMois=prix; }
+  else { DB.cantineEleves.push({id:uid('cant'),eleveId,abonne,prixMois:prix}); }
+  await saveDB(); closeModal(); toast('Abonnement cantine mis à jour.'); refresh();
+}
+async function facturerCantine(eleveId){
+  const e = eleveById(eleveId);
+  const ab = DB.cantineEleves.find(c=>c.eleveId===eleveId);
+  if(!ab?.abonne) return;
+  const mois = prompt('Mois à facturer (ex : Octobre 2026):', 'Octobre 2026');
+  if(!mois) return;
+  DB.factures.push({id:uid('fac'),eleveId,type:'cantine',libelle:'Cantine scolaire',montant:ab.prixMois||0,mois,date:todayISO(),statut:'À payer',numero:'FAC-'+genCode(5),auteur:SESSION.nom});
+  await saveDB(); toast('Facture cantine générée.'); refresh();
+}
+
+/* =================================================================
+   TRANSPORT
+   ================================================================= */
+ROUTES.transport = function(){
+  const rows = DB.eleves.map(e=>{
+    const tr = DB.transportEleves.find(t=>t.eleveId===e.id);
+    return `<tr>
+      <td>${escapeHtml(e.prenom)} ${escapeHtml(e.nom)}</td>
+      <td><span class="pill pill-rose">${escapeHtml(e.classe)}</span></td>
+      <td><span class="pill ${tr?.abonne?'pill-ok':'pill-navy'}">${tr?.abonne?'Inscrit':'Non inscrit'}</span></td>
+      <td>${tr?.ligne?escapeHtml(tr.ligne):'—'}</td>
+      <td>${tr?.abonne? fmtAr(tr.prixMois||0)+'/mois' : '—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="editTransport('${e.id}')">Modifier</button>
+      ${tr?.abonne?`<button class="btn btn-gold btn-sm" onclick="facturerTransport('${e.id}')">Facturer</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Services</div><h1>Transport scolaire</h1></div></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Élève</th><th>Classe</th><th>Statut</th><th>Ligne</th><th>Tarif</th><th>Actions</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucun élève.</td></tr>`}</tbody></table></div></div>`;
+};
+function editTransport(eleveId){
+  const tr = DB.transportEleves.find(t=>t.eleveId===eleveId)||{};
+  const e = eleveById(eleveId);
+  openModal(`Transport — ${e.prenom} ${e.nom}`, `
+    <div class="field"><label>Statut</label><select id="tr-ab"><option value="1" ${tr.abonne?'selected':''}>Inscrit</option><option value="0" ${!tr.abonne?'selected':''}>Non inscrit</option></select></div>
+    <div class="field"><label>Ligne / Itinéraire</label><input id="tr-ligne" value="${tr.ligne||''}" placeholder="Ex : Ligne Ambositra-Centre"></div>
+    <div class="field"><label>Prix mensuel (Ar)</label><input id="tr-prix" type="number" value="${tr.prixMois||20000}"></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveTransport('${eleveId}')">Enregistrer</button>`);
+}
+async function saveTransport(eleveId){
+  let tr = DB.transportEleves.find(t=>t.eleveId===eleveId);
+  const abonne = document.getElementById('tr-ab').value==='1';
+  if(tr){ tr.abonne=abonne; tr.ligne=val('tr-ligne'); tr.prixMois=parseFloat(val('tr-prix'))||0; }
+  else { DB.transportEleves.push({id:uid('tr'),eleveId,abonne,ligne:val('tr-ligne'),prixMois:parseFloat(val('tr-prix'))||0}); }
+  await saveDB(); closeModal(); toast('Transport mis à jour.'); refresh();
+}
+async function facturerTransport(eleveId){
+  const tr = DB.transportEleves.find(t=>t.eleveId===eleveId);
+  const mois = prompt('Mois à facturer:', 'Octobre 2026');
+  if(!mois) return;
+  DB.factures.push({id:uid('fac'),eleveId,type:'transport',libelle:'Transport scolaire',montant:tr.prixMois||0,mois,date:todayISO(),statut:'À payer',numero:'FAC-'+genCode(5),auteur:SESSION.nom});
+  await saveDB(); toast('Facture transport générée.'); refresh();
+}
+
+/* =================================================================
+   UNIFORMES
+   ================================================================= */
+ROUTES.uniformes = function(){
+  const rows = DB.uniformes.slice().reverse().map(u=>{
+    const e = eleveById(u.eleveId);
+    const total = (u.items||[]).reduce((s,i)=>s+(i.qte||1)*(i.prix||0),0);
+    return `<tr>
+      <td>${e? escapeHtml(e.prenom+' '+e.nom):'—'}</td>
+      <td>${e?`<span class="pill pill-rose">${e.classe}</span>`:'—'}</td>
+      <td>${(u.items||[]).map(i=>`${i.article} (${i.taille||'?'}) x${i.qte||1}`).join(', ')}</td>
+      <td>${fmtAr(total)}</td>
+      <td><span class="pill ${u.statut==='Livré'?'pill-ok':'pill-gold'}">${u.statut||'En attente'}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="editUniforme('${u.id}')">Voir</button>
+          ${canDeleteItem(u)?`<button class="btn btn-danger btn-sm" onclick="deleteUniforme('${u.id}')">🗑</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Services</div><h1>Uniformes scolaires</h1></div>
+    <button class="btn btn-primary" onclick="openAddUniforme()">＋ Nouvelle commande</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Élève</th><th>Classe</th><th>Articles</th><th>Total</th><th>Statut</th><th>Actions</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucune commande d'uniforme.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddUniforme(){
+  openModal("Commande d'uniforme", `
+    <div class="field"><label>Élève</label><select id="uni-eleve">${DB.eleves.map(e=>`<option value="${e.id}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div id="uni-items">
+      <div class="grid cols-4" style="gap:8px;margin-bottom:8px;">
+        <input id="uni-art-0" placeholder="Article" style="padding:8px;border:1.5px solid var(--line);border-radius:8px;">
+        <input id="uni-tail-0" placeholder="Taille" style="padding:8px;border:1.5px solid var(--line);border-radius:8px;">
+        <input id="uni-qte-0" type="number" value="1" min="1" placeholder="Qté" style="padding:8px;border:1.5px solid var(--line);border-radius:8px;">
+        <input id="uni-prix-0" type="number" placeholder="Prix (Ar)" style="padding:8px;border:1.5px solid var(--line);border-radius:8px;">
+      </div>
+    </div>
+    <div class="field"><label>Statut</label><select id="uni-statut"><option>En attente</option><option>Commandé</option><option>Livré</option></select></div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveUniforme()">Enregistrer</button>`);
+}
+async function saveUniforme(){
+  const art = document.getElementById('uni-art-0')?.value||'';
+  const items = art?[{article:art, taille:document.getElementById('uni-tail-0')?.value||'', qte:parseInt(document.getElementById('uni-qte-0')?.value)||1, prix:parseFloat(document.getElementById('uni-prix-0')?.value)||0}]:[];
+  DB.uniformes.push({id:uid('uni'),eleveId:val('uni-eleve'),items,statut:val('uni-statut'),date:todayISO(),auteur:SESSION.nom});
+  await saveDB(); closeModal(); toast('Commande d\'uniforme enregistrée.'); refresh();
+}
+function editUniforme(id){ const u=DB.uniformes.find(x=>x.id===id); if(!u) return; const e=eleveById(u.eleveId); openModal('Uniforme — '+(e?e.prenom+' '+e.nom:'?'), `<p><b>Articles :</b> ${(u.items||[]).map(i=>`${i.article} (${i.taille}) x${i.qte} — ${fmtAr(i.prix)}`).join('<br>')}</p><p>Statut actuel : ${u.statut}</p>`, `<button class="btn btn-primary" onclick="closeModal()">Fermer</button>`); }
+async function deleteUniforme(id){ if(!confirm('Supprimer ?')) return; DB.uniformes=DB.uniformes.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+/* =================================================================
+   AUTRES FRAIS
+   ================================================================= */
+ROUTES['autres-frais'] = function(){
+  const rows = DB.autresFrais.slice().reverse().map(f=>{
+    const e = eleveById(f.eleveId);
+    return `<tr>
+      <td>${e?escapeHtml(e.prenom+' '+e.nom):'—'}</td>
+      <td>${escapeHtml(f.libelle)}</td>
+      <td>${fmtAr(f.montant)}</td>
+      <td>${fmtDate(f.date)}</td>
+      <td><span class="pill ${f.statut==='Payé'?'pill-ok':'pill-danger'}">${f.statut}</span></td>
+      <td>
+        ${f.statut!=='Payé'?`<button class="btn btn-outline btn-sm" onclick="payerAutreFrais('${f.id}')">Marquer payé</button>`:''}
+        ${canDeleteItem(f)?`<button class="btn btn-danger btn-sm" onclick="deleteAutreFrais('${f.id}')">🗑</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Services</div><h1>Autres frais</h1></div>
+    <button class="btn btn-primary" onclick="openAddAutreFrais()">＋ Ajouter des frais</button>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Élève</th><th>Libellé</th><th>Montant</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+  <tbody>${rows || `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;">Aucun frais enregistré.</td></tr>`}</tbody></table></div></div>`;
+};
+function openAddAutreFrais(){
+  openModal("Ajouter des frais supplémentaires", `
+    <div class="field"><label>Élève</label><select id="af-eleve">${DB.eleves.map(e=>`<option value="${e.id}">${e.prenom} ${e.nom} (${e.classe})</option>`).join('')}</select></div>
+    <div class="field"><label>Libellé</label><input id="af-libelle" placeholder="Ex : Livres scolaires, sortie, photo…"></div>
+    <div class="grid cols-2">
+      <div class="field"><label>Montant (Ar)</label><input id="af-montant" type="number"></div>
+      <div class="field"><label>Date</label><input id="af-date" type="date" value="${todayISO()}"></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveAutreFrais()">Enregistrer</button>`);
+}
+async function saveAutreFrais(){
+  const lib=val('af-libelle'); if(!lib) return toast('Libellé requis.','error');
+  DB.autresFrais.push({id:uid('af'),eleveId:val('af-eleve'),libelle:lib,montant:parseFloat(val('af-montant'))||0,date:val('af-date')||todayISO(),statut:'À payer',auteur:SESSION.nom});
+  await saveDB(); closeModal(); toast('Frais enregistrés.'); refresh();
+}
+async function payerAutreFrais(id){ const f=DB.autresFrais.find(x=>x.id===id); f.statut='Payé'; await saveDB(); toast('Marqué payé.'); refresh(); }
+async function deleteAutreFrais(id){ if(!confirm('Supprimer ?')) return; DB.autresFrais=DB.autresFrais.filter(x=>x.id!==id); await saveDB(); refresh(); }
+
+/* =================================================================
+   INVENTAIRE MATÉRIEL
+   ================================================================= */
+ROUTES.inventaire = function(){
+  const inv = DB.inventaire;
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Services</div><h1>Inventaire matériel</h1></div>
+    <button class="btn btn-primary" onclick="openEditInventaire()">✏️ Mettre à jour</button>
+  </div>
+  <div class="grid cols-3" style="margin-bottom:18px;">
+    <div class="card stat-card"><div class="ic-bg">🪑</div><div class="label">Tables</div><div class="val">${inv.tables||0}</div></div>
+    <div class="card stat-card"><div class="ic-bg">🪑</div><div class="label">Chaises</div><div class="val">${inv.chaises||0}</div></div>
+    <div class="card stat-card"><div class="ic-bg">💻</div><div class="label">Ordinateurs</div><div class="val">${inv.ordinateurs||0}</div></div>
+    <div class="card stat-card"><div class="ic-bg">🖨️</div><div class="label">Imprimantes</div><div class="val">${inv.imprimantes||0}</div></div>
+    <div class="card stat-card"><div class="ic-bg">📚</div><div class="label">Matériel pédagogique</div><div class="val">${inv.materielPedagogique||0}</div></div>
+  </div>
+  ${(inv.autres||[]).length? `<div class="card"><b>Autres équipements</b><hr class="sep">
+    <div class="table-wrap"><table><thead><tr><th>Article</th><th>Quantité</th><th>Observations</th><th></th></tr></thead>
+    <tbody>${inv.autres.map((a,i)=>`<tr><td>${escapeHtml(a.article)}</td><td>${a.qte}</td><td>${escapeHtml(a.obs||'—')}</td><td><button class="btn btn-danger btn-sm" onclick="deleteInventaireAutre(${i})">🗑</button></td></tr>`).join('')}</tbody></table></div>
+    </div>` : ''}
+  <div class="card" style="margin-top:16px;">
+    <b>Ajouter un équipement</b><hr class="sep">
+    <div class="grid cols-3">
+      <div class="field"><label>Article</label><input id="inv-art" placeholder="Ex : Tableau blanc, projecteur…"></div>
+      <div class="field"><label>Quantité</label><input id="inv-qte" type="number" value="1" min="1"></div>
+      <div class="field"><label>Observations</label><input id="inv-obs" placeholder="État, salle…"></div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="addInventaireAutre()">＋ Ajouter</button>
+  </div>`;
+};
+function openEditInventaire(){
+  const inv = DB.inventaire;
+  openModal("Mise à jour de l'inventaire principal", `
+    <div class="grid cols-2">
+      <div class="field"><label>Tables</label><input id="inv-tables" type="number" value="${inv.tables||0}"></div>
+      <div class="field"><label>Chaises</label><input id="inv-chaises" type="number" value="${inv.chaises||0}"></div>
+      <div class="field"><label>Ordinateurs</label><input id="inv-ord" type="number" value="${inv.ordinateurs||0}"></div>
+      <div class="field"><label>Imprimantes</label><input id="inv-imp" type="number" value="${inv.imprimantes||0}"></div>
+      <div class="field"><label>Matériel pédagogique</label><input id="inv-matped" type="number" value="${inv.materielPedagogique||0}"></div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveInventaire()">Enregistrer</button>`);
+}
+async function saveInventaire(){
+  DB.inventaire.tables=parseInt(document.getElementById('inv-tables')?.value)||0;
+  DB.inventaire.chaises=parseInt(document.getElementById('inv-chaises')?.value)||0;
+  DB.inventaire.ordinateurs=parseInt(document.getElementById('inv-ord')?.value)||0;
+  DB.inventaire.imprimantes=parseInt(document.getElementById('inv-imp')?.value)||0;
+  DB.inventaire.materielPedagogique=parseInt(document.getElementById('inv-matped')?.value)||0;
+  await saveDB(); closeModal(); toast('Inventaire mis à jour.'); refresh();
+}
+async function addInventaireAutre(){
+  const art=val('inv-art'); if(!art) return toast('Article requis.','error');
+  if(!DB.inventaire.autres) DB.inventaire.autres=[];
+  DB.inventaire.autres.push({article:art, qte:parseInt(val('inv-qte'))||1, obs:val('inv-obs')});
+  await saveDB(); toast('Équipement ajouté.'); refresh();
+}
+async function deleteInventaireAutre(idx){ DB.inventaire.autres.splice(idx,1); await saveDB(); refresh(); }
+
+/* =================================================================
+   RAPPORTS
+   ================================================================= */
+ROUTES.rapports = function(){
+  const tabs = ['Journalier','Hebdomadaire','Mensuel','Annuel','Absences','Examens'];
+  window.__rapportTab = window.__rapportTab||'Journalier';
+  setTimeout(renderRapport, 100);
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Administration</div><h1>Rapports & Statistiques</h1></div>
+    <button class="btn btn-gold" onclick="window.print()">🖨️ Imprimer ce rapport</button>
+  </div>
+  <div class="tabs">${tabs.map(t=>`<button class="tab-btn ${window.__rapportTab===t?'active':''}" onclick="setRapportTab('${t}')">${t}</button>`).join('')}</div>
+  <div id="rapport-body"></div>`;
+};
+function setRapportTab(t){ window.__rapportTab=t; navigateTo('rapports'); }
+function renderRapport(){
+  const body = document.getElementById('rapport-body'); if(!body) return;
+  const tab = window.__rapportTab;
+  const today = todayISO();
+  if(tab==='Journalier'){
+    const presAujourdHui = DB.presences.filter(p=>p.date===today);
+    const absAujourdHui = DB.absences.filter(a=>a.date===today);
+    const factAujourdHui = DB.factures.filter(f=>f.date===today && f.statut==='Payé');
+    const journaux = DB.journalProf.filter(j=>j.date===today);
+    body.innerHTML = `
+      <div class="grid cols-4" style="margin-bottom:18px;">
+        <div class="card stat-card"><div class="ic-bg">📋</div><div class="label">Appels faits</div><div class="val">${presAujourdHui.length}</div></div>
+        <div class="card stat-card"><div class="ic-bg">🔴</div><div class="label">Absences du jour</div><div class="val">${absAujourdHui.length}</div></div>
+        <div class="card stat-card"><div class="ic-bg">💵</div><div class="label">Paiements reçus</div><div class="val">${fmtAr(factAujourdHui.reduce((s,f)=>s+f.montant,0))}</div></div>
+        <div class="card stat-card"><div class="ic-bg">📔</div><div class="label">Journaux signés</div><div class="val">${journaux.length}</div></div>
+      </div>
+      <div class="grid cols-2">
+        <div class="card"><b>Absences du jour (${today})</b><hr class="sep">
+          ${absAujourdHui.length? absAujourdHui.map(a=>`<div style="padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;">${eleveLabel(a.eleveId)} — ${escapeHtml(a.motif||'Sans motif')} <span class="pill ${a.justifie?'pill-ok':'pill-danger'}" style="font-size:10px;">${a.justifie?'Justifié':'Non justifié'}</span></div>`).join('') : '<div class="muted">Aucune absence signalée aujourd\'hui.</div>'}
+        </div>
+        <div class="card"><b>Journaux de classe du jour</b><hr class="sep">
+          ${journaux.length? journaux.map(j=>`<div style="padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;"><b>${escapeHtml(j.classe)} — ${escapeHtml(j.matiere)}</b><br><span class="muted">${escapeHtml(j.profNom)}</span><br>${escapeHtml(j.programme)}</div>`).join('') : '<div class="muted">Aucun journal signé aujourd\'hui.</div>'}
+        </div>
+      </div>`;
+  } else if(tab==='Absences'){
+    const abs = DB.absences.slice().reverse();
+    const nonJust = abs.filter(a=>!a.justifie).length;
+    body.innerHTML = `
+      <div class="grid cols-3" style="margin-bottom:18px;">
+        <div class="card stat-card"><div class="label">Total absences</div><div class="val">${abs.length}</div></div>
+        <div class="card stat-card"><div class="label">Non justifiées</div><div class="val" style="color:var(--danger);">${nonJust}</div></div>
+        <div class="card stat-card"><div class="label">Justifiées</div><div class="val" style="color:var(--ok);">${abs.length-nonJust}</div></div>
+      </div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Élève</th><th>Motif</th><th>Justifié</th></tr></thead>
+      <tbody>${abs.map(a=>`<tr><td>${fmtDate(a.date)}</td><td>${eleveLabel(a.eleveId)}</td><td>${escapeHtml(a.motif||'—')}</td><td><span class="pill ${a.justifie?'pill-ok':'pill-danger'}">${a.justifie?'Oui':'Non'}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+  } else if(tab==='Examens'){
+    const exams = DB.examens.slice().reverse();
+    body.innerHTML = `
+      <div class="grid cols-3" style="margin-bottom:18px;">
+        <div class="card stat-card"><div class="label">Total examens</div><div class="val">${exams.length}</div></div>
+        <div class="card stat-card"><div class="label">Résultats saisis</div><div class="val">${DB.resultatsExamens.length}</div></div>
+        <div class="card stat-card"><div class="label">Classes concernées</div><div class="val">${[...new Set(exams.map(e=>e.classe))].length}</div></div>
+      </div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>Titre</th><th>Classe</th><th>Matière</th><th>Date</th><th>Résultats</th></tr></thead>
+      <tbody>${exams.map(ex=>{
+        const res = DB.resultatsExamens.filter(r=>r.examenId===ex.id);
+        const moy = res.length? (res.reduce((s,r)=>s+r.note,0)/res.length/ex.baremeTotal*20).toFixed(2):'—';
+        return `<tr><td>${escapeHtml(ex.titre)}</td><td>${escapeHtml(ex.classe)}</td><td>${escapeHtml(ex.matiere)}</td><td>${fmtDate(ex.date)}</td><td>${res.length} élèves — moy: ${moy}/20</td></tr>`;
+      }).join('')}</tbody></table></div></div>`;
+  } else {
+    // Mensuel / Hebdomadaire / Annuel
+    const totalEleves = DB.eleves.filter(e=>e.statut!=='retiré').length;
+    const recettes = DB.factures.filter(f=>f.statut==='Payé').reduce((s,f)=>s+f.montant,0);
+    const depenses = SESSION.role==='directeur'? DB.finances.depenses.reduce((s,d)=>s+d.montant,0):null;
+    body.innerHTML = `
+      <div class="grid cols-4" style="margin-bottom:18px;">
+        <div class="card stat-card"><div class="label">Élèves inscrits</div><div class="val">${totalEleves}</div></div>
+        <div class="card stat-card"><div class="label">Total absences</div><div class="val">${DB.absences.length}</div></div>
+        <div class="card stat-card"><div class="label">Recettes totales</div><div class="val">${fmtAr(recettes)}</div></div>
+        ${SESSION.role==='directeur'?`<div class="card stat-card"><div class="label">Bénéfice net</div><div class="val" style="color:${(recettes-(depenses||0))>=0?'var(--ok)':'var(--danger)'};">${fmtAr(recettes-(depenses||0))}</div></div>`:'<div></div>'}
+      </div>
+      <div class="grid cols-2">
+        <div class="card"><b>Répartition des élèves par classe</b><hr class="sep">
+          ${DB.config.classes.map(c=>{ const n=DB.eleves.filter(e=>e.classe===c&&e.statut!=='retiré').length; return n?`<div class="flex" style="justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px;"><span>${c}</span><b>${n} élève(s)</b></div>`:''; }).join('')}
+        </div>
+        <div class="card"><b>Statistiques des absences par classe</b><hr class="sep">
+          ${DB.config.classes.map(c=>{ const els=DB.eleves.filter(e=>e.classe===c); const absN=DB.absences.filter(a=>els.some(e=>e.id===a.eleveId)).length; return absN?`<div class="flex" style="justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px;"><span>${c}</span><span class="pill pill-danger">${absN} abs.</span></div>`:''; }).join('')||'<div class="muted">Aucune absence.</div>'}
+        </div>
+      </div>`;
+  }
+}
+
+/* =================================================================
+   ESPACE PARENT — Absences, Emploi du temps, Examens
+   ================================================================= */
+ROUTES['p-absences'] = function(){
+  const e = eleveById(SESSION.id);
+  const abs = DB.absences.filter(a=>a.eleveId===e.id).slice().reverse();
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon enfant</div><h1>Absences</h1></div></div>
+  <div class="grid cols-3" style="margin-bottom:18px;">
+    <div class="card stat-card"><div class="label">Total absences</div><div class="val">${abs.length}</div></div>
+    <div class="card stat-card"><div class="label">Non justifiées</div><div class="val" style="color:var(--danger);">${abs.filter(a=>!a.justifie).length}</div></div>
+    <div class="card stat-card"><div class="label">Justifiées</div><div class="val" style="color:var(--ok);">${abs.filter(a=>a.justifie).length}</div></div>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Motif</th><th>Justification</th><th>Statut</th></tr></thead>
+  <tbody>${abs.length? abs.map(a=>`<tr><td>${fmtDate(a.date)}</td><td>${escapeHtml(a.motif||'—')}</td><td>${escapeHtml(a.justification||'—')}</td><td><span class="pill ${a.justifie?'pill-ok':'pill-danger'}">${a.justifie?'Justifiée':'Non justifiée'}</span></td></tr>`).join('') : `<tr><td colspan="4" class="muted" style="text-align:center;padding:24px;">Aucune absence enregistrée.</td></tr>`}</tbody></table></div></div>`;
+};
+
+ROUTES['p-emploi-du-temps'] = function(){
+  const e = eleveById(SESSION.id);
+  const jours=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const heures=['07:00','08:00','09:00','10:00','11:00','14:00','15:00','16:00'];
+  const labels=['07h-08h','08h-09h','09h-10h','10h-11h','11h-12h','14h-15h','15h-16h','16h-17h'];
+  const mesCours = DB.emploiDuTemps.filter(c=>c.classe===e.classe);
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon enfant</div><h1>Emploi du temps — ${e.classe}</h1></div></div>
+  <div class="card" style="overflow-x:auto;">
+    <div class="edt-grid">
+      <div class="edt-head">Heure</div>
+      ${jours.map(j=>`<div class="edt-head">${j}</div>`).join('')}
+      ${heures.map((h,hi)=>`
+        <div class="edt-time">${labels[hi]}</div>
+        ${jours.map(j=>{
+          const cours = mesCours.find(c=>c.jour===j && c.heureDebut===h);
+          if(cours){
+            const prof = DB.personnel.find(p=>p.id===cours.profId);
+            return `<div class="edt-cell filled">
+              <div class="edt-mat">${escapeHtml(cours.matiere)}</div>
+              ${prof?`<div class="edt-prof">${escapeHtml(prof.nom)}</div>`:''}
+              ${cours.salle?`<div class="edt-salle">📍 ${escapeHtml(cours.salle)}</div>`:''}
+            </div>`;
+          }
+          return `<div class="edt-cell"></div>`;
+        }).join('')}
+      `).join('')}
+    </div>
+  </div>`;
+};
+
+ROUTES['p-examens'] = function(){
+  const e = eleveById(SESSION.id);
+  const exams = DB.examens.filter(ex=>ex.classe===e.classe).slice().reverse();
+  return `
+  <div class="topbar"><div><div class="breadcrumb">Mon enfant</div><h1>Examens</h1></div></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Examen</th><th>Matière</th><th>Date</th><th>Ma note</th><th>Appréciation</th></tr></thead>
+  <tbody>${exams.length? exams.map(ex=>{
+    const res = DB.resultatsExamens.find(r=>r.examenId===ex.id && r.eleveId===e.id);
+    const note = res? res.note : null;
+    const moy = note!==null? (note/ex.baremeTotal*20) : null;
+    return `<tr><td>${escapeHtml(ex.titre)}</td><td>${escapeHtml(ex.matiere)}</td><td>${fmtDate(ex.date)}</td><td>${note!==null?note+'/'+ex.baremeTotal:'—'}</td><td>${appreciationFromMoy(moy)}</td></tr>`;
+  }).join('') : `<tr><td colspan="5" class="muted" style="text-align:center;padding:24px;">Aucun examen pour votre classe.</td></tr>`}</tbody></table></div></div>`;
+};
+
+/* =================================================================
+   INIT
+   ================================================================= */
+async function init(){
+  await loadDB();
+  document.getElementById('loading-overlay').style.display='none';
+  initLogin();
+  if(!restoreSession()) document.getElementById('login-screen').style.display='flex';
+}
+init();
+</script>
+</body>
+</html>
