@@ -1253,7 +1253,7 @@ async function doLogin(){
     SESSION = { role:'parent', id:eleve.id, nom: eleve.parentNom || (eleve.prenom+' '+eleve.nom) };
   }
 
-  localStorage.setItem('printania_session', JSON.stringify(SESSION));
+  sessionStorage.setItem('printania_session', JSON.stringify(SESSION));
   enterApp(defaultRouteFor(SESSION.role));
 }
 function enterApp(route){
@@ -1264,7 +1264,7 @@ function enterApp(route){
 }
 function restoreSession(){
   try{
-    const s=JSON.parse(localStorage.getItem('printania_session')||'null');
+    const s=JSON.parse(sessionStorage.getItem('printania_session')||'null');
     if(!s) return false;
     if(s.role==='parent'){ if(!DB.eleves.find(e=>e.id===s.id)) return false; }
     else if(!DB.personnel.find(p=>p.id===s.id)) return false;
@@ -1299,7 +1299,7 @@ function showLoginError(msg){ const e=document.getElementById('login-error'); e.
 
 function logout(){
   SESSION=null;
-  localStorage.removeItem('printania_session'); localStorage.removeItem('printania_route');
+  sessionStorage.removeItem('printania_session'); localStorage.removeItem('printania_route');
   document.getElementById('app-screen').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
