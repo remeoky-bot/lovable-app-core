@@ -11,7 +11,7 @@ function db() {
 }
 
 let ready: Promise<unknown> | undefined;
-function ensureTable(sql: ReturnType<typeof neon>) {
+function ensureTable(sql: ReturnType<typeof db>) {
   ready ??= sql`CREATE TABLE IF NOT EXISTS app_store (key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`;
   return ready;
 }
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/public/store")({
         await ensureTable(sql);
         const rows = (await sql`SELECT value FROM app_store WHERE key = ${key}`) as { value: unknown }[];
         if (!rows.length) return new Response("Not found", { status: 404 });
-        return Response.json({ value: rows[0].value });
+        return Response.json({ value: rows[0]!.value });
       },
       POST: async ({ request }) => {
         const body = (await request.json()) as { key?: string; value?: unknown };
