@@ -32,6 +32,27 @@ export type Database = {
         }
         Relationships: []
       }
+      app_store_history: {
+        Row: {
+          id: number
+          key: string
+          saved_at: string
+          value: Json
+        }
+        Insert: {
+          id?: number
+          key: string
+          saved_at?: string
+          value: Json
+        }
+        Update: {
+          id?: number
+          key?: string
+          saved_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
