@@ -638,7 +638,7 @@ textarea:focus{outline:none;border-color:var(--fuchsia);}
       const r=await fetch(URL_+"?key=eq."+encodeURIComponent(k)+"&select=value",{headers:H});
       if(!r.ok) throw new Error("load failed "+r.status);
       const rows=await r.json();
-      if(!rows.length) throw new Error("not found");
+      if(!rows.length){ const e=new Error("not found"); e.notFound=true; throw e; }
       return {value: JSON.stringify(rows[0].value)};
     },
     async set(k,v){
@@ -1115,19 +1115,34 @@ function purgeCorbeilleExpired(){
   DB.corbeille = DB.corbeille.filter(item=>joursRestantsCorbeille(item) > 0);
   return DB.corbeille.length !== avant;
 }
+let DB_LOADED_OK = false;
 async function loadDB(){
-  try{
-    const res = await window.storage.get('printania_db', SHARED);
-    DB = JSON.parse(res.value);
-    migrateDB();
-  }catch(e){
-    DB = defaultDB();
-    await saveDB();
+  // SÉCURITÉ : on ne remplace par une base vide QUE si la base n'existe vraiment pas.
+  // Une erreur réseau ne doit jamais écraser les données enregistrées.
+  for(let attempt=0; attempt<4; attempt++){
+    try{
+      const res = await window.storage.get('printania_db', SHARED);
+      DB = JSON.parse(res.value);
+      migrateDB();
+      DB_LOADED_OK = true;
+      return;
+    }catch(e){
+      if(e && e.notFound){
+        DB = defaultDB();
+        DB_LOADED_OK = true;
+        await saveDB();
+        return;
+      }
+      await new Promise(r=>setTimeout(r, 1500*(attempt+1)));
+    }
   }
+  document.body.innerHTML = '<div style="font-family:sans-serif;padding:40px;text-align:center"><h2>Connexion à la base de données impossible</h2><p>Vos données sont en sécurité. Vérifiez votre connexion internet puis actualisez la page.</p><button onclick="location.reload()" style="padding:10px 20px;font-size:16px">Actualiser</button></div>';
+  throw new Error('DB load failed');
 }
 let saveTimer=null;
 async function saveDB(){
   try{
+    if(!DB_LOADED_OK) return;
     await window.storage.set('printania_db', JSON.stringify(DB), SHARED);
   }catch(e){ console.error('save error', e); }
 }
