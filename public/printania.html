@@ -641,6 +641,12 @@ textarea:focus{outline:none;border-color:var(--fuchsia);}
       if(!rows.length){ const e=new Error("not found"); e.notFound=true; throw e; }
       return {value: JSON.stringify(rows[0].value)};
     },
+    async getParts(k){
+      const r=await fetch(URL_+"?key=eq."+encodeURIComponent(k)+"&select=eleves:value->eleves,corbeille:value->corbeille",{headers:H,cache:"no-store"});
+      if(!r.ok) throw new Error("load failed "+r.status);
+      const rows=await r.json();
+      return rows.length ? rows[0] : null;
+    },
     async set(k,v){
       const r=await fetch(URL_+"?on_conflict=key",{method:"POST",headers:Object.assign({Prefer:"resolution=merge-duplicates,return=minimal"},H),body:JSON.stringify({key:k,value:JSON.parse(v),updated_at:new Date().toISOString()}),keepalive:v.length<60000});
       if(!r.ok) throw new Error("save failed "+r.status);
@@ -1140,11 +1146,53 @@ async function loadDB(){
   throw new Error('DB load failed');
 }
 let saveTimer=null;
+// Élèves / éléments de corbeille retirés volontairement depuis CETTE page.
+const ELEVES_RETIRES_ICI = new Set();
+const CORBEILLE_RETIREES_ICI = new Set();
+// PROTECTION : avant chaque enregistrement, on relit la base. Tout élève (ou élément de
+// corbeille) présent dans la base mais absent de cette page (ajouté depuis un autre appareil
+// ou une autre page restée ouverte) est conservé, jamais effacé.
+async function fusionnerAvantSauvegarde(){
+  const dist = await window.storage.getParts('printania_db');
+  if(!dist) return;
+  if(Array.isArray(dist.eleves) && Array.isArray(DB.eleves)){
+    const locaux = new Set(DB.eleves.map(e=>e && e.id));
+    const manquants = dist.eleves.filter(e=>e && e.id && !locaux.has(e.id) && !ELEVES_RETIRES_ICI.has(e.id));
+    if(manquants.length) DB.eleves.push(...manquants);
+  }
+  if(Array.isArray(dist.corbeille)){
+    if(!Array.isArray(DB.corbeille)) DB.corbeille = [];
+    const locaux = new Set(DB.corbeille.map(c=>c && c.id));
+    const manquants = dist.corbeille.filter(c=>c && c.id && !locaux.has(c.id) && !CORBEILLE_RETIREES_ICI.has(c.id) && joursRestantsCorbeille(c) > 0);
+    if(manquants.length) DB.corbeille.push(...manquants);
+  }
+}
+function alerteSauvegarde(show){
+  let b = document.getElementById('save-fail-banner');
+  if(!show){ if(b) b.remove(); return; }
+  if(b) return;
+  b = document.createElement('div');
+  b.id = 'save-fail-banner';
+  b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#b42318;color:#fff;padding:10px 16px;text-align:center;font:600 14px sans-serif;';
+  b.textContent = "⚠️ Le dernier enregistrement n'a pas pu être fait (connexion). Ne fermez pas la page : vérifiez internet puis refaites l'action.";
+  document.body.appendChild(b);
+}
 async function saveDB(){
-  try{
-    if(!DB_LOADED_OK) return;
-    await window.storage.set('printania_db', JSON.stringify(DB), SHARED);
-  }catch(e){ console.error('save error', e); }
+  if(!DB_LOADED_OK) return false;
+  for(let attempt=0; attempt<3; attempt++){
+    try{
+      await fusionnerAvantSauvegarde();
+      await window.storage.set('printania_db', JSON.stringify(DB), SHARED);
+      alerteSauvegarde(false);
+      return true;
+    }catch(e){
+      console.error('save error', e);
+      await new Promise(r=>setTimeout(r, 1000*(attempt+1)));
+    }
+  }
+  alerteSauvegarde(true);
+  try{ toast("Enregistrement impossible — vérifiez la connexion internet.", 'error'); }catch(_){}
+  return false;
 }
 function saveSoon(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveDB, 250); }
 
@@ -1726,7 +1774,7 @@ ROUTES.eleves = function(){
   const nbG = actifs.filter(e=>e.sexe==='Masculin').length;
   const nbF = actifs.filter(e=>e.sexe==='Féminin').length;
   const rows = DB.eleves.slice().reverse().map(e=>`
-    <tr>
+    <tr data-eleve="1" data-classe="${escapeHtml(e.classe||'')}">
       <td><div class="flex gap10">
         <div class="avatar" style="width:34px;height:34px;">${e.photo?`<img src="${e.photo}" alt="">`:(e.prenom||'?').slice(0,1)}</div>
         <b>${escapeHtml(e.matricule)||'—'}</b>
@@ -2365,15 +2413,24 @@ async function retireEleve(id){
 }
 
 function filterTable(input, tableId){
+  if(tableId==='tbl-eleves'){ const t=document.getElementById('tbl-eleves'); if(t){ t.dataset.q=input.value; applyElevesFilters(); } return; }
   const q = input.value.toLowerCase();
   document.querySelectorAll(`#${tableId} tbody tr`).forEach(tr=>{
     tr.style.display = tr.textContent.toLowerCase().includes(q)? '' : 'none';
   });
 }
 function filterByClass(sel){
-  const c = sel.value;
-  document.querySelectorAll(`#tbl-eleves tbody tr`).forEach(tr=>{
-    tr.style.display = (!c || tr.children[2].textContent.trim()===c)? '' : 'none';
+  const t=document.getElementById('tbl-eleves'); if(!t) return;
+  t.dataset.classe = sel.value; applyElevesFilters();
+}
+// Filtre combiné (recherche + classe) sur la colonne « Classe » de chaque élève.
+function applyElevesFilters(){
+  const t=document.getElementById('tbl-eleves'); if(!t) return;
+  const q=(t.dataset.q||'').toLowerCase().trim(), c=(t.dataset.classe||'').trim();
+  t.querySelectorAll('tbody tr[data-eleve]').forEach(tr=>{
+    const okC = !c || (tr.dataset.classe||'').trim()===c;
+    const okQ = !q || tr.textContent.toLowerCase().includes(q);
+    tr.style.display = (okC && okQ) ? '' : 'none';
   });
 }
 
@@ -2570,14 +2627,16 @@ async function restaurerCorbeille(id){
   if(!canManageCorbeille()) return toast("Seule la Direction ou le Bureau peut restaurer un élément.", 'error');
   const item = (DB.corbeille||[]).find(x=>x.id===id); if(!item) return;
   if(!confirm(`Restaurer « ${corbeilleLabel(item)} » ? Il/elle réapparaîtra dans la liste correspondante.`)) return;
-  if(item.type==='eleve') DB.eleves.push(item.data);
+  if(item.type==='eleve'){ ELEVES_RETIRES_ICI.delete(item.data.id); if(!DB.eleves.some(e=>e.id===item.data.id)) DB.eleves.push(item.data); }
   else if(item.type==='personnel') DB.personnel.push(item.data);
+  CORBEILLE_RETIREES_ICI.add(id);
   DB.corbeille = DB.corbeille.filter(x=>x.id!==id);
   await saveDB(); toast('Élément restauré.','ok'); refresh();
 }
 async function supprimerDefinitivementCorbeille(id){
   if(!canManageCorbeille()) return toast("Seule la Direction ou le Bureau peut supprimer définitivement.", 'error');
   const item = (DB.corbeille||[]).find(x=>x.id===id); if(!item) return;
+  CORBEILLE_RETIREES_ICI.add(id);
   if(!confirm(`⚠️ ATTENTION — Suppression définitive\n\n« ${corbeilleLabel(item)} » sera supprimé(e) DÉFINITIVEMENT et ne pourra plus jamais être récupéré(e).\n\nConfirmez-vous cette action irréversible ?`)) return;
   DB.corbeille = DB.corbeille.filter(x=>x.id!==id);
   await saveDB(); toast('Élément supprimé définitivement.','warn'); refresh();
@@ -2594,6 +2653,7 @@ async function deleteEleve(id){
   if(!canManageCorbeille()) return toast("Seule la Direction ou le Bureau peut supprimer un élève.", 'error');
   const e = eleveById(id); if(!e) return;
   if(!confirm(`Supprimer « ${e.prenom} ${e.nom} » de la liste des élèves ?\n\nCet élève sera déplacé vers la Corbeille. Vous pourrez le restaurer ou le supprimer définitivement depuis la Corbeille (conservation 30 jours).`)) return;
+  ELEVES_RETIRES_ICI.add(id);
   DB.eleves = DB.eleves.filter(x=>x.id!==id);
   if(!DB.corbeille) DB.corbeille=[];
   DB.corbeille.push({ id:uid('corb'), type:'eleve', data:e, supprimePar:SESSION.nom, dateSuppression:new Date().toISOString() });

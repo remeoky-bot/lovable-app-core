@@ -15,6 +15,13 @@
       "when": 1791350491503,
       "tag": "0001_app_store_history",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794839004905,
+      "tag": "0002_app_store_backups",
+      "breakpoints": true
     }
   ]
 }
